@@ -1,14 +1,14 @@
 "use client";
 import React, { useState } from 'react';
-import { StepIndicator } from '../components/appointment/StepIndicator';
-import { PersonalInfoStep } from '../components/appointment/PersonalInfoStep'; 
-import { ConfirmationStep } from '../components/appointment/ConfirmationStep';
-import { AppointmentDetailsStep } from '../components/appointment/AppointmentDetailsStep';
+import  StepIndicator  from '../components/appointment/StepIndicator';
+import  PersonalInfoStep  from '../components/appointment/PersonalInfoStep'; 
+import  ConfirmationStep  from '../components/appointment/ConfirmationStep';
+import AppointmentDetailsStep  from '../components/appointment/AppointmentDetailsStep';
 
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-export default function AppointmentBooking() {
+const AppointmentBooking = ()  => {
   const [appointmentStep, setAppointmentStep] = useState(1);
   const [appointmentSubmitted, setAppointmentSubmitted] = useState(false);
   const [appointmentReference, setAppointmentReference] = useState('');
@@ -184,3 +184,6 @@ export default function AppointmentBooking() {
     </>
   );
 }
+export default AppointmentBooking;
+
+

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function StepIndicator({ currentStep }) {
+const StepIndicator = ({ currentStep })  => {
   const steps = [
     { number: 1, label: 'Personal Info' },
     { number: 2, label: 'Appointment Details' },
@@ -37,3 +37,4 @@ export function StepIndicator({ currentStep }) {
     </div>
   );
 }
+export default StepIndicator;

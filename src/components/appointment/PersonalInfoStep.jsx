@@ -89,5 +89,7 @@ const PersonalInfoStep = ({ formData, updateFormData, onNext, isValid }) => {
     </div>
   );
 }
+
 export default PersonalInfoStep;
+
 

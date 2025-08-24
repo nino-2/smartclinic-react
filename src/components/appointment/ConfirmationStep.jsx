@@ -2,7 +2,7 @@
 import React from 'react';
 import Form  from './Form';
 
-export function ConfirmationStep({
+const ConfirmationStep = ({
   formData,
   updateFormData,
   onPrevious,
@@ -13,7 +13,7 @@ export function ConfirmationStep({
   appointmentReference,
   formatDate,
   formatTime
-}) {
+}) => {
   if (isSubmitted) {
     return (
       <div className="p-6">
@@ -159,3 +159,5 @@ export function ConfirmationStep({
     </div>
   );
 }
+export default ConfirmationStep;
+
