@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react'
 
-const Faqsection = () => {
+const FqSection = () => {
+
     const [activeFaq, setActiveFaq] = useState({
         faq1: false,
         faq2: false,
@@ -90,4 +90,4 @@ const Faqsection = () => {
   )
 }
 
-export default Faqsection
+export default FqSection

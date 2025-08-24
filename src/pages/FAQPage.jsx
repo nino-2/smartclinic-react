@@ -1,11 +1,12 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import Faqsection from '../components/faq-healthytips/Faqsection'
+
 import Healthsection from '../components/faq-healthytips/Healthsection'
 import OperatingHours from '../components/contact-us/OperatingHours'
 import ContactUs from '../components/contact-us/ContactUs'
 import Needmore from '../components/faq-healthytips/Needmore'
+import FqSection from '../components/faq-healthytips/FqSection'
 
 const FAQPage = () => {
   return (
@@ -45,7 +46,7 @@ const FAQPage = () => {
                    <p className='text-red-600 leading-relaxed text-base max-sm:text-sm'>Flu season is here! Get your flu vaccination at our clinic. If you have symptoms of fever, body aches, or respiratory issues, please call ahead before visiting. Free flu shots available for all our students and staffs.</p>
                 </div>
                 {/* FAQ Section */}
-                 <Faqsection/>
+                 <FqSection/>
                 {/* Healthy Tips Section */}
                 <Healthsection/>
                 {/* Operating Hours & Contact Details Section */}
