@@ -168,6 +168,7 @@ const Navbar = ({
           )}
 
           <nav className="flex flex-col gap-4">
+            <Link to='/'>
             <button
               onClick={() => navigateTo('home')}
               style={{
@@ -178,12 +179,17 @@ const Navbar = ({
             >
               Home
             </button>
+            </Link>
+            <Link to='/appointment'>
             <button
               onClick={bookAppointment}
               className="p-3 rounded-lg font-medium text-[#666] transition-all duration-200 cursor-pointer text-left"
             >
               Book Appointment
             </button>
+            </Link>
+
+            <Link to='/faq'>
             <button
               onClick={() => navigateTo('contact')}
               style={{
@@ -194,7 +200,7 @@ const Navbar = ({
             >
               Contact
             </button>
-
+            </Link>
             {/* Conditional Mobile Login/Logout */}
             {isLoggedIn ? (
               <button
