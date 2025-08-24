@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-export function FormField({
+const Form = ({
   label,
   type = 'text',
   placeholder,
@@ -14,10 +14,10 @@ export function FormField({
   id,
   checked,
   className = ''
-}) {
-  const baseInputClasses = "w-full px-4 py-3 border border-[#E3F2FD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent";
+}) => {
+    const baseInputClasses = "w-full px-4 py-3 border border-[#E3F2FD] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1976D2] focus:border-transparent";
 
-  if (type === 'select') {
+      if (type === 'select') {
     return (
       <div className={className}>
         <label className="block text-sm font-medium text-[#333] mb-2">
@@ -86,5 +86,7 @@ export function FormField({
         min={min}
       />
     </div>
-  );
+  )
 }
+
+export default Form

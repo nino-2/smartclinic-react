@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { FormField } from '../appointment/FormField';
+import Form from './Form';
 
 
 export function PersonalInfoStep({ formData, updateFormData, onNext, isValid }) {
@@ -23,35 +24,35 @@ export function PersonalInfoStep({ formData, updateFormData, onNext, isValid }) 
         Personal Information
       </h2>
       <div className="grid max-md:grid-cols-1 grid-cols-2 gap-6">
-        <FormField
+        <Form
           label="First Name"
           placeholder="Enter your full name"
           value={formData.lastName}
           onInput={(event) => updateFormData('fullName', event.target.value)}
           required
         />
-        <FormField
+        <Form
           label="Last Name"
           placeholder="Enter your full name"
           value={formData.lastName}
           onInput={(event) => updateFormData('fullName', event.target.value)}
           required
         />
-        <FormField
+        <Form
           label="Matric Number / Staff ID"
           placeholder="Enter your ID"
           value={formData.idNumber}
           onInput={(event) => updateFormData('idNumber', event.target.value)}
           required
         />
-        <FormField
+        <Form
           label="Department"
           placeholder="Enter your department"
           value={formData.department}
           onInput={(event) => updateFormData('department', event.target.value)}
           required
         />
-          <FormField
+          <Form
           label="Level"
           type="select"
           value={formData.level}
@@ -59,7 +60,7 @@ export function PersonalInfoStep({ formData, updateFormData, onNext, isValid }) 
           options={levelOptions}
           required
         />
-        <FormField
+        <Form
           label="Gender"
           type="select"
           value={formData.gender}
@@ -67,7 +68,7 @@ export function PersonalInfoStep({ formData, updateFormData, onNext, isValid }) 
           options={genderOptions}
           required
         />
-        <FormField
+        <Form
           label="Phone Number"
           type="tel"
           placeholder="Enter your phone number"

@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { FormField } from './Formfield';
+import Form from './Form';
 
 export function ConfirmationStep({
   formData,
@@ -117,7 +117,7 @@ export function ConfirmationStep({
         </div>
       </div>
       <div className="bg-[#E3F2FD] rounded-lg p-4 mb-6">
-        <FormField
+        <Form
           type="checkbox"
           id="smsReminder"
           label="Send me SMS reminders about this appointment"
@@ -125,7 +125,7 @@ export function ConfirmationStep({
           onChange={(event) => updateFormData('smsReminder', event.target.checked)}
         />
         <div className="mt-3">
-          <FormField
+          <Form
             type="checkbox"
             id="emailReminder"
             label="Send me email reminders about this appointment"

@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { FormField } from './Formfield';
+import Form from './Form';
 
 export function AppointmentDetailsStep({ formData, updateFormData, onNext, onPrevious, isValid }) {
   const timeOptions = [
@@ -28,7 +28,7 @@ export function AppointmentDetailsStep({ formData, updateFormData, onNext, onPre
         Appointment Details
       </h2>
       <div className="grid max-md:grid-cols-1 grid-cols-2 gap-6">
-        <FormField
+        <Form
           label="Preferred Date"
           type="date"
           value={formData.date}
@@ -36,7 +36,7 @@ export function AppointmentDetailsStep({ formData, updateFormData, onNext, onPre
           min={new Date().toISOString().split("T")[0]}
           required
         />
-        <FormField
+        <Form
           label="Preferred Time"
           type="select"
           value={formData.time}
@@ -45,7 +45,7 @@ export function AppointmentDetailsStep({ formData, updateFormData, onNext, onPre
           required
         />
         <div className="max-md:col-span-1 col-span-2">
-          <FormField
+          <Form
             label="Reason for Visit"
             type="select"
             value={formData.reasonType}
@@ -54,7 +54,7 @@ export function AppointmentDetailsStep({ formData, updateFormData, onNext, onPre
             required
             className="mb-4"
           />
-          <FormField
+          <Form
             type="textarea"
             placeholder="Please describe your symptoms or reason for visit..."
             value={formData.reasonDetails}
