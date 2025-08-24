@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
-import { FormField } from './Formfield';
+import { FormField } from '../appointment/FormField';
+
 
 export function PersonalInfoStep({ formData, updateFormData, onNext, isValid }) {
   const genderOptions = [
