@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
@@ -9,9 +9,14 @@ import Needmore from '../components/faq-healthytips/Needmore'
 import FqSection from '../components/faq-healthytips/FqSection'
 
 const FAQPage = () => {
+        const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <>
-        <Navbar/>
+        <Navbar
+         mobileMenuOpen={mobileMenuOpen}
+        toggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
+        closeMobileMenu={() => setMobileMenuOpen(false)}
+        />
         <main className='flex-1 bg-[#F8F9FA]'>
         <div className='min-h-screen py-8 bg-gradient-to-br from-[#F8FDFF] via-[#FFFFFF] to-[#F1F8E9]'>
            <div className='max-w-6xl mx-auto px-4 max-sm:px-3'>

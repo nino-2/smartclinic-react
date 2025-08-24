@@ -12,7 +12,7 @@ const AppointmentBooking = ()  => {
   const [appointmentStep, setAppointmentStep] = useState(1);
   const [appointmentSubmitted, setAppointmentSubmitted] = useState(false);
   const [appointmentReference, setAppointmentReference] = useState('');
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [appointmentForm, setAppointmentForm] = useState({
     fullName: '',
     idNumber: '',
@@ -117,7 +117,11 @@ const AppointmentBooking = ()  => {
 
   return (
     <>
-    <Navbar/>
+    <Navbar
+     mobileMenuOpen={mobileMenuOpen}
+        toggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
+        closeMobileMenu={() => setMobileMenuOpen(false)}
+    />
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 max-sm:px-3">
         <header className="bg-white border-b border-[#E3F2FD] px-6 py-6 rounded-t-xl">

@@ -17,10 +17,14 @@ const ChatWithAI = () => {
   const [sendMessage, setSendMessage] = useState(() => null);
   const [toggleRecording, setToggleRecording] = useState(() => null);
   const [isRecording, setIsRecording] = useState(() => null);
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <>
-      <Navbar />
+      <Navbar
+       mobileMenuOpen={mobileMenuOpen}
+        toggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
+        closeMobileMenu={() => setMobileMenuOpen(false)}
+      />
             <main className="flex-1 bg-[#F8F9FA]">
       <div className="h-screen flex flex-col">
         <ChatHeader endChat={endChat} />
