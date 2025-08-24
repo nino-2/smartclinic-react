@@ -125,7 +125,7 @@ const AppointmentBooking = ()  => {
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 max-sm:px-3">
         <header className="bg-white border-b border-[#E3F2FD] px-6 py-6 rounded-t-xl">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-6 ">
             <div className="w-12 h-12 bg-gradient-to-br from-[#1976D2] to-[#4CAF50] rounded-full flex items-center justify-center">
               <svg
                 className="w-6 h-6 text-white"
@@ -147,7 +147,7 @@ const AppointmentBooking = ()  => {
           <StepIndicator currentStep={appointmentStep} />
         </header>
 
-        <main className="bg-white rounded-b-xl shadow-lg">
+        <main className="bg-white rounded-b-xl shadow-lg sm:px-6 lg:px-8">
           {appointmentStep === 1 && (
             <PersonalInfoStep
               formData={appointmentForm}

@@ -134,7 +134,7 @@ const ConfirmationStep = ({
           />
         </div>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between sm:flex-col sm:items-center sm:gap-4">
         <button
           className="bg-[#E0E0E0] text-[#666] px-8 py-3 rounded-lg font-medium transition-all duration-200 hover:bg-[#BDBDBD]"
           onClick={onPrevious}
