@@ -1,8 +1,8 @@
 "use client";
 import React from 'react';
-import Form from './Form';
+import {Form } from './Form';
 
-export function AppointmentDetailsStep({ formData, updateFormData, onNext, onPrevious, isValid }) {
+const  AppointmentDetailsStep = ({ formData, updateFormData, onNext, onPrevious, isValid }) => {
   const timeOptions = [
     { value: '', label: 'Select Time' },
     { value: '08:00', label: '8:00 AM' },
@@ -81,3 +81,5 @@ export function AppointmentDetailsStep({ formData, updateFormData, onNext, onPre
     </div>
   );
 }
+export default AppointmentDetailsStep;
+
