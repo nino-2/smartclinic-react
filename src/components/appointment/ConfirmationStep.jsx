@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import {Form } from './Form';
+import Form  from './Form';
 
 export function ConfirmationStep({
   formData,

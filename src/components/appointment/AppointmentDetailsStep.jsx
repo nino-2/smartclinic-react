@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import {Form } from './Form';
+import Form  from './Form';
 
 const  AppointmentDetailsStep = ({ formData, updateFormData, onNext, onPrevious, isValid }) => {
   const timeOptions = [
