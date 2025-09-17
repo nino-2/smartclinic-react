@@ -13,11 +13,11 @@ const CallToAction = () => {
           Join thousands of MAPOLY students who trust our smart clinic
           assistant for their healthcare needs.
         </p>
-        <div className="flex max-sm:flex-col gap-4 justify-center">
+        <div className="flex max-sm:flex-col gap-4 justify-center items-center">
           
-          <Link to='/smartclinic'>
+          <Link to='/smartclinic' className='w-full sm:w-auto'>
           <button
-            className="bg-[#1976D2] text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:bg-[#1565C0]"
+            className=" w-full sm:w-auto bg-[#1976D2] text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:bg-[#1565C0]"
           >
             💬 Start Chatting Now
             <svg
@@ -36,10 +36,10 @@ const CallToAction = () => {
           </button>
           </Link>
 
-          <Link to='/appointment'>
+          <Link to='/appointment' className='w-full sm:w-auto'>
           <button
             
-            className="bg-white text-[#1976D2] border-2 border-[#1976D2] py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-200 hover:bg-[#E3F2FD]"
+            className=" w-full sm:w-auto bg-white text-[#1976D2] border-2 border-[#1976D2] py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-200 hover:bg-[#E3F2FD]"
           >
             Book Appointment
           </button>
