@@ -79,7 +79,7 @@ const AppointmentBooking = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          `${API_URL}/appointments/book`,
+          `${API_URL}/appointment/book`,
           values,
           { withCredentials: true }
         );
