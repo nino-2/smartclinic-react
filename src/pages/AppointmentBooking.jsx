@@ -17,6 +17,7 @@ const AppointmentBooking = () => {
   const [appointmentReference, setAppointmentReference] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userData, setUserData] = useState({ firstname: "", lastname: "" });
+  
   const API_URL = import.meta.env.VITE_API_URL;
 
   // Fetch user data for prefill
