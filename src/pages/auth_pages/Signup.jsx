@@ -32,7 +32,7 @@ const Signup = () => {
         })
         .then((response)=>{
           console.log(response.data)
-          if (response.data.status) {
+          if (response.data?.status === true) {
             navigate('/auth/login')
           } else {
             setMessage(response.data.message)
