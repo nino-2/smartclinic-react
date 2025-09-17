@@ -21,28 +21,28 @@ const AISettings = ({children}) => {
     {
       id: 1,
       question: "How do I schedule an appointment?",
-      answer: "You can schedule an appointment by calling our front desk at (555) 123-4567 or using our online booking system available 24/7.",
+      answer: "You can schedule an appointment by calling our front desk at +234-806-555-6525 or using our online booking system available 24/7.",
       category: "Appointments",
       usage: 145
     },
     {
       id: 2,
       question: "What should I bring to my appointment?",
-      answer: "Please bring a valid ID, insurance cards, list of current medications, and any relevant medical records or test results.",
+      answer: "Please bring a valid School ID, insurance cards, list of current medications, and any relevant medical records or test results.",
       category: "General",
       usage: 98
     },
     {
       id: 3,
       question: "What are your office hours?",
-      answer: "We're open Monday-Friday 8AM-6PM, Saturday 9AM-3PM, and closed on Sundays. Emergency services are available 24/7.",
+      answer: "We're open Monday-Friday 8AM-6PM, Saturday 8AM-6PM, and closed on Sundays. Emergency services are available 24/7.",
       category: "General",
       usage: 87
     },
     {
       id: 4,
       question: "How do I get my test results?",
-      answer: "Test results are available through our patient portal within 24-48 hours. You'll receive an email notification when they're ready.",
+      answer: "Test results are usually available from the clinic within 24–48 hours. You can collect them directly at the clinic reception or request that they be shared with you by phone or email, depending on your clinic’s policy. If you haven’t received your results after two days, please contact the clinic staff for an update.",
       category: "Medical",
       usage: 76
     }
@@ -53,7 +53,7 @@ const AISettings = ({children}) => {
     "I apologize, but I don't have specific information about that. Please contact our staff for assistance.",
     "I'm not sure about that particular question. Would you like me to connect you with a healthcare professional?",
     "That's a great question! For the most accurate information, please speak with one of our medical staff members.",
-    "I don't have that information readily available. Please call our office at (555) 123-4567 for assistance."
+    "I don't have that information readily available. Please call our office at +234-806-555-6525 for assistance."
   ]);
 
   // AI Usage Analytics (sample data)

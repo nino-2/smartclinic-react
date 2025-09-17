@@ -7,6 +7,7 @@ import AppointmentBooking from './pages/AppointmentBooking'
 import FAQPage from './pages/FAQPage'
 import AuthLayout from './layouts/AuthLayout'
 import AdminLayout from './layouts/AdminLayout'
+import ProtectedRoutes from '../ProtectedRoutes'
 
 
 function App() {
@@ -17,12 +18,25 @@ function App() {
       <AnimatePresence>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path='/smartclinic' element={<ChatWithAI/>}/>
-          <Route path="/appointment" element={<AppointmentBooking />} />
-          <Route path="/faq" element={<FAQPage />} />
+          <Route path='/smartclinic' element={
+            <ProtectedRoutes>
+            <ChatWithAI/>
+            </ProtectedRoutes>
+            }/>
+          <Route path="/appointment" element={
+            <ProtectedRoutes>
+            <AppointmentBooking />
+            </ProtectedRoutes>
+            } />
+          <Route path="/faq" element={
+           
+            <FAQPage />
+            } />
           <Route path='/auth/*' element={<AuthLayout/>}/>
           <Route path='/admin/*' element={<AdminLayout/>}/>
           {/* Add more routes as needed */}
+
+
         </Routes>
       </AnimatePresence>
     </>

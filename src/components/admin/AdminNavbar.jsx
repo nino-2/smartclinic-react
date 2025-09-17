@@ -1,9 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Calendar, Users, MessageSquare, Bot, LogOut, X } from "lucide-react";
+import axios from "axios";
 
 const AdminNavbar = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
-
+  const navigate = useNavigate();
   const navigation = [
     { name: "Home", href: "/admin/dashboard", icon: Home },
     { name: "Appointments", href: "/admin/appointments", icon: Calendar },
@@ -12,6 +13,13 @@ const AdminNavbar = ({ sidebarOpen, setSidebarOpen }) => {
     { name: "AI Assistant Settings", href: "/admin/aisettings", icon: Bot },
   ];
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  
+   const adminLogout = () => {
+     axios.post(`${API_URL}/admin/logout`, {}, {withCredentials: true})
+     navigate('/auth/login');
+   }
   return (
     <div
       className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform 
@@ -49,7 +57,7 @@ const AdminNavbar = ({ sidebarOpen, setSidebarOpen }) => {
           );
         })}
 
-        <button className="flex items-center w-full px-4 py-3 mt-8 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 border-t pt-6">
+        <button onClick={adminLogout} className="flex items-center w-full px-4 py-3 mt-8 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 border-t pt-6">
           <LogOut className="mr-3 h-5 w-5" />
           Logout
         </button>

@@ -1,29 +1,34 @@
 "use client";
 import React from "react";
+import { useAuth } from "../../context/AuthContext";
 
-function ChatMessage({ message }) {
+const ChatMessage = ({ message}) => {
+  const {firstname} = useAuth()
   if (message.type === "ai") {
     return (
       <div className="w-full">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#1976D2] to-[#4CAF50] rounded-full flex items-center justify-center flex-shrink-0">
+          {/* AI Avatar */}
+          <div
+            className="w-8 h-8 bg-gradient-to-br from-[#1976D2] to-[#4CAF50] rounded-full flex items-center justify-center flex-shrink-0"
+            aria-label="AI assistant"
+            title="AI assistant"
+          >
             <span className="text-white text-xs font-bold">AI</span>
           </div>
+
+          {/* AI Message */}
           <div className="bg-white border border-[#E3F2FD] rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
             {message.id === 1 ? (
               <div className="text-center">
                 <p className="text-lg font-semibold text-[#1976D2] mb-3">
-                  Hey @FIRSTNAME, What can I help with?
+                  Hey {firstname}, what can I help with?
                 </p>
               </div>
             ) : (
-              <p className="text-[#333] leading-relaxed">
-                {message.text}
-              </p>
+              <p className="text-[#333] leading-relaxed">{message.text}</p>
             )}
-            <p className="text-xs text-[#999] mt-2">
-              {message.timestamp}
-            </p>
+            <p className="text-xs text-[#999] mt-2">{message.timestamp}</p>
           </div>
         </div>
       </div>
@@ -34,13 +39,21 @@ function ChatMessage({ message }) {
     return (
       <div className="w-full">
         <div className="flex items-start gap-3 justify-end">
-          <div className="bg-[#1976D2] text-white rounded-2xl rounded-tr-md px-4 py-3 shadow-sm">
+          {/* User Message */}
+          <div
+            className="bg-[#1976D2] text-white rounded-2xl rounded-tr-md px-4 py-3 shadow-sm"
+            aria-label="Your message"
+          >
             <p className="leading-relaxed">{message.text}</p>
-            <p className="text-xs text-[#B3E5FC] mt-2">
-              {message.timestamp}
-            </p>
+            <p className="text-xs text-[#B3E5FC] mt-2">{message.timestamp}</p>
           </div>
-          <div className="w-8 h-8 bg-[#4CAF50] rounded-full flex items-center justify-center flex-shrink-0">
+
+          {/* User Avatar */}
+          <div
+            className="w-8 h-8 bg-[#4CAF50] rounded-full flex items-center justify-center flex-shrink-0"
+            aria-label="You"
+            title="You"
+          >
             <svg
               className="w-4 h-4 text-white"
               fill="currentColor"

@@ -1,5 +1,6 @@
 import { Calendar, MessageSquareText } from 'lucide-react'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Needmore = () => {
     const moreSection = [
@@ -7,13 +8,15 @@ const Needmore = () => {
             icon: Calendar,
             name: 'Book Appointment',
             info: 'Schedule a consultation with our medical professionals',
-            status: 'Blue'
+            status: 'Blue',
+            route: '/appointment'
         },
         {
             icon: MessageSquareText,
             name: 'AI Assitant',
             info: 'Get instant answers from our smarthealth assistant',
-            status: 'Green'
+            status: 'Green',
+            route: '/smartclinic'
         }
     ]
     const statusColors = {
@@ -32,7 +35,7 @@ const Needmore = () => {
          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 max-sm:gap-6'>
             {
                 moreSection.map((more,index)=>(
-                  <div key={index}>
+                  <Link to={more.route} key={index}>
                     <div className='flex flex-col items-center gap-6 max-sm:gap-4 p-5 max-sm:p-5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300'>
                     <div className='w-20 h-20 max-sm:w-16 max-sm:h-16  rounded-full flex items-center justify-center mx-auto mb-5 max-sm:mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg'
                      style={{ backgroundColor: statusColors[more.status] }}>
@@ -49,7 +52,7 @@ const Needmore = () => {
                     
                 </div>
                 
-               </div>
+               </Link>
                 ))
             }
          </div>

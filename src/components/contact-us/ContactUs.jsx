@@ -5,25 +5,25 @@ const ContactUs = () => {
         {
             icon: PhoneIcon,
             name: 'Main Line',
-            info: '+234 123 4567',
+            info: '+234-806-555-6525',
             status: 'Blue'
         },
         {
             icon: AlertTriangle,
             name: 'Emergency',
-            info: '+234 987 6543',
+            info: '+234-802-645-2653',
             status: 'Red'
         },
         {
             icon: Mail,
             name: 'Email',
-            info: 'clinic@mapoly.edu.ng',
+            info: 'info@mapoly.edu.ng',
             status: 'Green'
         },
         {
             icon: MapPinIcon,
             name: 'Location',
-            info: 'MAPOLY Campus, Abeokuta',
+            info: 'MAPOLY Campus, Abeokuta, Ogun State',
             status: 'Yellow'
         }
     ]

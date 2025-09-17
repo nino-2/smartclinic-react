@@ -1,49 +1,47 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
-
+import { useFormik } from 'formik';
+import axios from 'axios';
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+
+const [isLoading, setIsLoading] = useState(false);
+ const [message, setMessage] = useState('')
   const navigate = useNavigate();
-  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const API_URL = import.meta.env.VITE_API_URL;
 
-    try {
-      // Simulate API call for password reset
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "OTP Sent",
-        description: "OTP code has been sent to your email",
-        variant: "default",
-      });
-      
-      setIsSubmitted(true);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send OTP. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
+  // let url = 'http://localhost:5001/auth/request'
+
+  let formik = useFormik({
+    initialValues: {
+      email: '',
+    },
+    onSubmit:(values) =>{
+      console.log(values)
+      axios.post(`${API_URL}/auth/request`, values, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response)=>{
+        if (response.data.status) {
+          navigate(`/auth/otp?email=${values.email}`)
+        } else {
+          setMessage(response.data.message)
+        }
+      })
     }
-  };
 
-  const handleBackToLogin = () => {
-    navigate('/');
-  };
+  })
 
-  if (isSubmitted) {
+
+
+ 
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-[#F5F9FF]">
-        <div className="w-full max-w-md">
+        {message ? (<div className="w-full max-w-md">
           <div className="bg-white rounded-2xl shadow-lg p-8">
             {/* Success State */}
             <div className="text-center mb-8">
@@ -64,7 +62,7 @@ const ForgotPassword = () => {
                   We've sent an OTP code to:
                 </p>
                 <p className="font-semibold text-gray-900 mb-6">
-                  {email}
+                 {formik.values.email}
                 </p>
                 <div className="bg-[#F1F8E9] border border-[#C8E6C9] rounded-lg p-4">
                   <p className="text-sm text-gray-600 leading-relaxed">
@@ -74,22 +72,17 @@ const ForgotPassword = () => {
                 </div>
               </div>
 
+              <Link to='/auth/login'>
               <button
-                onClick={handleBackToLogin}
                 className="w-full bg-[#1976D2] hover:bg-[#0D47A1] text-white py-3 px-4 rounded-lg font-medium transition-all duration-200"
               >
                 Back to Login
               </button>
+              </Link>
             </div>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#F5F9FF]">
-      <div className="w-full max-w-md">
+        </div>) :(
+           <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-lg p-8">
           {/* Logo & Branding */}
           <div className="text-center mb-8">
@@ -106,7 +99,7 @@ const ForgotPassword = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={formik.handleSubmit} className="space-y-6">
             {/* Instructions */}
             <div className="bg-[#F1F8E9] border border-[#C8E6C9] rounded-lg p-4">
               <p className="text-sm text-gray-700">
@@ -126,8 +119,8 @@ const ForgotPassword = () => {
                 <input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={formik.handleChange}
+                  value={formik.values.email}
                   placeholder="Enter your email"
                   className="w-full pl-10 pr-4 py-3 border border-[#E0E0E0] rounded-lg outline-none transition-all duration-200 focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20"
                   required
@@ -137,7 +130,7 @@ const ForgotPassword = () => {
             </div>
 
             {/* Submit Button */}
-            <Link to='/auth/otp'>
+          
             <button
               type="submit"
               disabled={isLoading}
@@ -152,7 +145,7 @@ const ForgotPassword = () => {
                 'Send OTP'
               )}
             </button>
-            </Link>
+            
 
             {/* Help Text */}
             <div className="text-center">
@@ -170,7 +163,6 @@ const ForgotPassword = () => {
         <div className="text-center mt-6">
           <Link to='/auth/login'>
           <button
-            onClick={handleBackToLogin}
             className="flex items-center justify-center space-x-2 text-sm text-[#1976D2] hover:underline transition-colors mx-auto"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -179,7 +171,12 @@ const ForgotPassword = () => {
           </Link>
         </div>
       </div>
-    </div>
-  );
-}
+        )}
+        
+      </div>
+    );
+  }
+
+  
+
 export default ForgotPassword;

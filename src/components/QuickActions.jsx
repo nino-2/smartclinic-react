@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const QuickActions = ({ bookAppointment, navigateTo }) => {
+const QuickActions = () => {
   return (
     <section className="py-16 max-sm:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 max-sm:px-3">
@@ -32,12 +32,15 @@ const QuickActions = ({ bookAppointment, navigateTo }) => {
               Schedule your visit with our medical professionals quickly
               and easily.
             </p>
+
+            <Link to='/appointment'>
             <button
-              onClick={bookAppointment}
+            
               className="w-full bg-[#1976D2] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#1565C0]"
             >
               Book Now
             </button>
+            </Link>
           </div>
           <div className="bg-gradient-to-br from-[#F1F8E9] to-white rounded-2xl p-8 max-sm:p-6 text-center shadow-lg border border-[#E8F5E8] transition-all duration-200 hover:shadow-xl">
             <div className="w-16 h-16 bg-[#4CAF50] rounded-full flex items-center justify-center mx-auto mb-6">
@@ -58,7 +61,7 @@ const QuickActions = ({ bookAppointment, navigateTo }) => {
             </p>
             <Link to="/faq">
             <button
-              onClick={() => navigateTo('faq')}
+              
               className="w-full bg-[#4CAF50] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#45A049]"
             >
               Learn More
@@ -82,12 +85,14 @@ const QuickActions = ({ bookAppointment, navigateTo }) => {
               Get in touch with our support team for any questions or
               assistance.
             </p>
+            <Link to='/faq'>
             <button
-              onClick={() => navigateTo('contact')}
+              
               className="w-full bg-[#FFC107] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#FFB300]"
             >
               Contact Us
             </button>
+            </Link>
           </div>
         </div>
       </div>

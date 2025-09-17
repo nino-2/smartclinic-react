@@ -5,11 +5,11 @@ const OperatingHours = () => {
     const Operations = [
         {
             day: 'Monday - Friday',
-            hours: '8:00 AM - 4:00 PM'
+            hours: '8:00 AM - 6:00 PM'
         },
         {
             day: 'Saturday',
-            hours: '9:00 AM - 3:00PM'
+            hours: '8:00 AM - 6:00PM'
         },
         {
             day: 'Sunday',

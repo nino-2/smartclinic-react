@@ -20,11 +20,8 @@ const AdminHeader = ({setSidebarOpen}) => {
                 <button className="p-2 rounded hover:bg-gray-100">
                   <Bell className="h-5 w-5" />
                 </button>
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
+                
               </div>
-              <button className="p-2 rounded hover:bg-gray-100">
-                <Settings className="h-5 w-5" />
-              </button>
               <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium text-white">A</span>
               </div>

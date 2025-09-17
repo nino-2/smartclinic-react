@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
    Menu, X, Bell, 
@@ -7,116 +7,154 @@ import {
 } from "lucide-react";
 import AdminNavbar from "../../components/admin/AdminNavbar";
 import AdminHeader from "../../components/admin/AdminHeader";
+import axios from "axios";
+import * as XLSX from 'xlsx'
+import {saveAs} from 'file-saver'
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
 
 const Appointments = ({children}) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("");
-  const location = useLocation();
+  const [appointments, setAppointments] = useState([]);
+  const [showModal, setShowModal] = useState(false)
+  const [newDate, setNewDate] = useState("");
+  const [newTime, setNewTime] = useState("");
+  const [rescheduleId, setRescheduleId] = useState(null);
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
+    // Fetch from backend
+
+    const fetchAppointments = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/admin/appointments`, {
+          withCredentials: true,
+          params: {
+            search: searchTerm,
+            status: statusFilter,
+            date: dateFilter
+          }
+        });
+        if (res.data.status) setAppointments(res.data.appointments);
+      } catch (err) {
+        console.error("Error fetching appointments", err);
+      }
+    };
+  
+ 
+    useEffect(() => {
+    fetchAppointments();
+  }, [searchTerm, statusFilter, dateFilter]);
 
 
-
-  // Sample appointments data
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      patientName: "John Smith",
-      date: "2024-01-15",
-      time: "09:00 AM",
-      status: "pending",
-      type: "Consultation",
-      phone: "+1-234-567-8901"
-    },
-    {
-      id: 2,
-      patientName: "Sarah Johnson",
-      date: "2024-01-15",
-      time: "10:30 AM",
-      status: "confirmed",
-      type: "Follow-up",
-      phone: "+1-234-567-8902"
-    },
-    {
-      id: 3,
-      patientName: "Mike Brown",
-      date: "2024-01-15",
-      time: "02:00 PM",
-      status: "pending",
-      type: "Check-up",
-      phone: "+1-234-567-8903"
-    },
-    {
-      id: 4,
-      patientName: "Lisa Davis",
-      date: "2024-01-16",
-      time: "09:30 AM",
-      status: "confirmed",
-      type: "Consultation",
-      phone: "+1-234-567-8904"
-    },
-    {
-      id: 5,
-      patientName: "Robert Wilson",
-      date: "2024-01-16",
-      time: "11:00 AM",
-      status: "cancelled",
-      type: "Follow-up",
-      phone: "+1-234-567-8905"
-    },
-    {
-      id: 6,
-      patientName: "Emily Chen",
-      date: "2024-01-16",
-      time: "03:30 PM",
-      status: "pending",
-      type: "Consultation",
-      phone: "+1-234-567-8906"
+    // Update status
+  const updateStatus = async (id, status) => {
+    try {
+      const payload = {status}
+       if (status === "rescheduled") {
+      payload.date = newDate;
+      payload.time = newTime;
     }
-  ]);
-
-  // Filter appointments based on search and filters
-  const filteredAppointments = appointments.filter(appointment => {
-    const matchesSearch = appointment.patientName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || appointment.status === statusFilter;
-    const matchesDate = !dateFilter || appointment.date === dateFilter;
-    return matchesSearch && matchesStatus && matchesDate;
-  });
-
-  // Handle appointment actions
-  const handleApprove = (id) => {
-    setAppointments(prev => 
-      prev.map(apt => apt.id === id ? { ...apt, status: "confirmed" } : apt)
+    await axios.patch(
+      `${API_URL}/admin/appointments/${id}`,
+      payload,
+      { withCredentials: true },
     );
-  };
-
-  const handleCancel = (id) => {
-    setAppointments(prev => 
-      prev.map(apt => apt.id === id ? { ...apt, status: "cancelled" } : apt)
+    // Update the appointment in local state immediately
+    setAppointments(prevAppointments =>
+      prevAppointments.map(apt =>
+        apt._id === id ? { ...apt, ...payload } : apt
+      )
     );
+   
+    setShowModal(false);
+    setNewDate("");
+    setNewTime("");
+    setRescheduleId(null);
+  } catch (err) {
+    console.error("Failed to update appointment status", err);
+  }
   };
 
-  const handleReschedule = (id) => {
-    // In a real app, this would open a date/time picker modal
-    alert(`Reschedule appointment ${id} - This would open a date/time picker`);
-  };
+  // Button handlers
+  const handleApprove = (id) => updateStatus(id, "confirmed");
+  const handleCancel = (id) => updateStatus(id, "cancelled" );
+  const handleReschedule = (id) => updateStatus(id, "rescheduled" );
 
-  const exportToExcel = () => {
-    alert("Export to Excel functionality - Would generate Excel file");
-  };
-
-  const exportToPDF = () => {
-    alert("Export to PDF functionality - Would generate PDF file");
-  };
-
-  const getStatusBadge = (status) => {
+    const getStatusBadge = (status) => {
     const statusClasses = {
       pending: "bg-yellow-100 text-yellow-800",
       confirmed: "bg-green-100 text-green-800",
-      cancelled: "bg-red-100 text-red-800"
+      cancelled: "bg-red-100 text-red-800",
+      
     };
     return statusClasses[status] || "bg-gray-100 text-gray-800";
   };
+
+ // Filter locally in case backend doesn't support search
+  const filteredAppointments = appointments.filter(apt =>
+    apt.patientName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (statusFilter === "all" || apt.status === statusFilter) &&
+    (!dateFilter || apt.date === dateFilter)
+  );
+
+
+
+  // Export to Excel
+  const exportToExcel = () => {
+   // convert appointments state into sheet
+  const worksheet = XLSX.utils.json_to_sheet(appointments);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Appointments");
+
+  // create buffer
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  // save file
+  const fileData = new Blob([excelBuffer], {
+    type: "application/octet-stream",
+  });
+  saveAs(fileData, "appointments.xlsx");
+  };
+
+  // Export to PDF
+  const exportToPDF = () => {
+      const doc = new jsPDF();
+
+  // define table columns
+  const columns = ["Patient", "Date", "Time", "Status"];
+
+  // map your state into rows
+  const rows = appointments.map((apt) => [
+    apt.patientName,
+    apt.date,
+    apt.time,
+    apt.status,
+  ]);
+
+  // add title
+  doc.setFontSize(16);
+  doc.text("Appointments Report", 14, 20);
+
+  // add table
+  autoTable(doc,{
+    head: [columns],
+    body: rows,
+    startY: 30,
+  });
+
+  // download
+  doc.save("appointments.pdf")
+  };
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -226,52 +264,95 @@ const Appointments = ({children}) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredAppointments.map((appointment) => (
-                    <tr key={appointment.id} className="hover:bg-gray-50">
+                  {filteredAppointments?.map((apt) => (
+                    <tr key={apt._id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {appointment.patientName}
+                            {apt.patientName}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {appointment.type}
+                            {apt.type}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(appointment.date).toLocaleDateString()}
+                        {new Date(apt.date).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {appointment.time}
+                        {apt.time}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(appointment.status)}`}>
-                          {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(apt.status)}`}>
+                          {apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-1">
-                          {appointment.status === "pending" && (
+                          {apt.status === "pending" && (
                             <button
-                              onClick={() => handleApprove(appointment.id)}
+                              onClick={() => handleApprove(apt._id)}
                               className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
                             >
                               <Check className="h-3 w-3 mr-1" />
                               Approve
                             </button>
                           )}
-                          {appointment.status !== "cancelled" && (
+                          {apt.status !== "cancelled" && (
                             <button
-                              onClick={() => handleReschedule(appointment.id)}
+                            onClick={()=> {
+                              setRescheduleId(apt._id)
+                              setShowModal(true)
+                            }}
+                              
                               className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                             >
                               <Edit className="h-3 w-3 mr-1" />
                               Reschedule
                             </button>
+                            
                           )}
-                          {appointment.status !== "cancelled" && (
+                          {showModal && (
+                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
+                            <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
+                              <h2 className="text-lg font-bold mb-4">Reschedule Appointment</h2>
+
+                              <div className="space-y-3">
+                                <input
+                                  type="date"
+                                  value={newDate}
+                                  onChange={e => setNewDate(e.target.value)}
+                                  className="w-1/2 border rounded px-3 py-2"
+                                />
+                                <input
+                                  type="time"
+                                  value={newTime}
+                                  onChange={e => setNewTime(e.target.value)}
+                                  className="w-1/2 border rounded px-3 py-2"
+                                />
+                              </div>
+
+                              <div className="flex justify-end gap-2 mt-4">
+                                <button
+                                  onClick={() => setShowModal(false)}
+                                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={() => handleReschedule(rescheduleId)}
+                                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                          {apt.status !== "cancelled" && (
                             <button
-                              onClick={() => handleCancel(appointment.id)}
+                              onClick={() => handleCancel(apt._id)}
                               className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
                             >
                               <Ban className="h-3 w-3 mr-1" />
@@ -289,51 +370,91 @@ const Appointments = ({children}) => {
 
           {/* Appointments Cards - Mobile View */}
           <div className="md:hidden space-y-4">
-            {filteredAppointments.map((appointment) => (
-              <div key={appointment.id} className="bg-white rounded-lg shadow p-4">
+            {filteredAppointments?.map((apt) => (
+              <div key={apt._id} className="bg-white rounded-lg shadow p-4">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-medium text-gray-900">{appointment.patientName}</h3>
-                    <p className="text-sm text-gray-500">{appointment.type}</p>
+                    <h3 className="font-medium text-gray-900">{apt.patientName}</h3>
+                    <p className="text-sm text-gray-500">{apt.type}</p>
                   </div>
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(appointment.status)}`}>
-                    {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(apt.status)}`}>
+                    {apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
                   </span>
                 </div>
                 
                 <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
-                    {new Date(appointment.date).toLocaleDateString()}
+                    {new Date(apt.date).toLocaleDateString()}
                   </div>
                   <div className="flex items-center">
                     <Clock className="h-4 w-4 mr-1" />
-                    {appointment.time}
+                    {apt.time}
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {appointment.status === "pending" && (
+                  {apt.status === "pending" && (
                     <button
-                      onClick={() => handleApprove(appointment.id)}
+                      onClick={() => handleApprove(apt._id)}
                       className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
                     >
                       <Check className="h-3 w-3 mr-1" />
                       Approve
                     </button>
                   )}
-                  {appointment.status !== "cancelled" && (
+                  {apt.status !== "cancelled" && (
                     <button
-                      onClick={() => handleReschedule(appointment.id)}
+                      onClick={() => {
+                        setRescheduleId(apt._id)
+                        setShowModal(true)
+                      }}
                       className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                     >
                       <Edit className="h-3 w-3 mr-1" />
                       Reschedule
                     </button>
                   )}
-                  {appointment.status !== "cancelled" && (
+                  {showModal && (
+                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
+                            <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
+                              <h2 className="text-lg font-bold mb-4">Reschedule Appointment</h2>
+
+                              <div className="space-y-3">
+                                <input
+                                  type="date"
+                                  value={newDate}
+                                  onChange={e => setNewDate(e.target.value)}
+                                  className="w-1/2 border rounded px-3 py-2"
+                                />
+                                <input
+                                  type="time"
+                                  value={newTime}
+                                  onChange={e => setNewTime(e.target.value)}
+                                  className="w-1/2 border rounded px-3 py-2"
+                                />
+                              </div>
+
+                              <div className="flex justify-end gap-2 mt-4">
+                                <button
+                                  onClick={() => setShowModal(false)}
+                                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={() => handleReschedule(rescheduleId)}
+                                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                  {apt.status !== "cancelled" && (
                     <button
-                      onClick={() => handleCancel(appointment.id)}
+                      onClick={() => handleCancel(apt._id)}
                       className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
                     >
                       <Ban className="h-3 w-3 mr-1" />
@@ -343,34 +464,6 @@ const Appointments = ({children}) => {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-4 md:mt-6">
-            <div className="bg-white p-3 md:p-4 rounded-lg shadow">
-              <div className="text-lg md:text-2xl font-bold text-gray-900">
-                {filteredAppointments.length}
-              </div>
-              <div className="text-xs md:text-sm text-gray-500">Total Appointments</div>
-            </div>
-            <div className="bg-white p-3 md:p-4 rounded-lg shadow">
-              <div className="text-lg md:text-2xl font-bold text-yellow-600">
-                {filteredAppointments.filter(apt => apt.status === "pending").length}
-              </div>
-              <div className="text-xs md:text-sm text-gray-500">Pending</div>
-            </div>
-            <div className="bg-white p-3 md:p-4 rounded-lg shadow">
-              <div className="text-lg md:text-2xl font-bold text-green-600">
-                {filteredAppointments.filter(apt => apt.status === "confirmed").length}
-              </div>
-              <div className="text-xs md:text-sm text-gray-500">Confirmed</div>
-            </div>
-            <div className="bg-white p-3 md:p-4 rounded-lg shadow">
-              <div className="text-lg md:text-2xl font-bold text-red-600">
-                {filteredAppointments.filter(apt => apt.status === "cancelled").length}
-              </div>
-              <div className="text-xs md:text-sm text-gray-500">Cancelled</div>
-            </div>
           </div>
         </main>
       </div>

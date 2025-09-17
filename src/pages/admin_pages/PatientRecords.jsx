@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
   Menu, X, Bell, Settings,Search,Plus,Eye,Edit,Trash2,
@@ -7,6 +7,8 @@ import {
 } from "lucide-react";
 import AdminNavbar from "../../components/admin/AdminNavbar";
 import AdminHeader from "../../components/admin/AdminHeader";
+import axios from "axios";
+
 
 const PatientRecords = ()  => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,119 +17,131 @@ const PatientRecords = ()  => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const location = useLocation();
+  const [fileUpload, setFileUpload] = useState(null)
+  const [editingPatient, setEditingPatient] = useState(null)
+  const [deletingPatient, setDeletingPatient] = useState(null)
+  const [loading, setLoading] = useState(false);
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
+// Fetch Patients
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+      const res = await axios.get(`${API_URL}/admin/patients`, {
+        withCredentials: true,
+      });
+      setPatients(res.data.data || []);
+      console.log("Patients API response:", res.data);
+    } catch (error) {
+      console.error("Error fetching patients:", error);
+    }
+  };
+   fetchPatients()
+  }, [])
+  
+  
 
 
   // Sample patient records data
-  const [patients, setPatients] = useState([
-    {
-      id: 1,
-      matricNo: "MED001",
-      name: "John Smith",
-      age: 28,
-      gender: "Male",
-      phone: "+1-234-567-8901",
-      email: "john.smith@example.com",
-      address: "123 Main St, City",
-      lastVisit: "2024-01-10",
-      bloodGroup: "O+",
-      allergies: "Penicillin",
-      medicalHistory: ["Hypertension", "Diabetes"],
-      reports: [
-        { name: "Blood Test Report.pdf", type: "pdf", date: "2024-01-10" },
-        { name: "X-Ray.jpg", type: "image", date: "2024-01-05" }
-      ]
-    },
-    {
-      id: 2,
-      matricNo: "MED002",
-      name: "Sarah Johnson",
-      age: 34,
-      gender: "Female",
-      phone: "+1-234-567-8902",
-      email: "sarah.johnson@example.com",
-      address: "456 Oak Ave, City",
-      lastVisit: "2024-01-12",
-      bloodGroup: "A+",
-      allergies: "None",
-      medicalHistory: ["Asthma"],
-      reports: [
-        { name: "Chest X-Ray.pdf", type: "pdf", date: "2024-01-12" }
-      ]
-    },
-    {
-      id: 3,
-      matricNo: "MED003",
-      name: "Mike Brown",
-      age: 45,
-      gender: "Male",
-      phone: "+1-234-567-8903",
-      email: "mike.brown@example.com",
-      address: "789 Pine St, City",
-      lastVisit: "2024-01-08",
-      bloodGroup: "B+",
-      allergies: "Latex",
-      medicalHistory: ["Heart Disease", "High Cholesterol"],
-      reports: [
-        { name: "ECG Report.pdf", type: "pdf", date: "2024-01-08" },
-        { name: "Blood Work.pdf", type: "pdf", date: "2024-01-08" }
-      ]
-    },
-    {
-      id: 4,
-      matricNo: "MED004",
-      name: "Lisa Davis",
-      age: 29,
-      gender: "Female",
-      phone: "+1-234-567-8904",
-      email: "lisa.davis@example.com",
-      address: "321 Elm St, City",
-      lastVisit: "2024-01-14",
-      bloodGroup: "AB+",
-      allergies: "Nuts",
-      medicalHistory: ["Migraine"],
-      reports: [
-        { name: "MRI Scan.jpg", type: "image", date: "2024-01-14" }
-      ]
-    }
-  ]);
+  const [patients, setPatients] = useState([]);
 
-  // Filter patients based on search
-  const filteredPatients = patients.filter(patient => {
-    if (searchType === "name") {
-      return patient.name.toLowerCase().includes(searchTerm.toLowerCase());
-    } else {
-      return patient.matricNo.toLowerCase().includes(searchTerm.toLowerCase());
-    }
-  });
+  const filteredPatients = patients.filter((patient) => {
+  if (!searchTerm) return true; // show all if no search input
+
+  if (searchType === "name") {
+    const fullName = `${patient.firstname || ""} ${patient.lastname || ""}`;
+    return fullName.toLowerCase().includes(searchTerm.toLowerCase());
+  }
+
+  if (searchType === "matric") {
+    return patient.matric?.toLowerCase().includes(searchTerm.toLowerCase());
+  }
+
+  return false;
+});
 
   // Handle patient actions
   const handleAddPatient = () => {
     setShowAddModal(true);
   };
 
-  const handleViewPatient = (patient) => {
-    setSelectedPatient(patient);
-    setShowViewModal(true);
-  };
+  const handleView = async (id) => {
+  try {
+    setLoading(true);
+    const res = await axios.get(`${API_URL}/admin/patients/${id}`, {
+      withCredentials: true,
+    });
+    setSelectedPatient(res.data);
+    setShowViewModal(true)
+    setLoading(false);
+  } catch (error) {
+    console.error("Error fetching patient details:", error);
+  } finally {
+    setLoading(false)
+  }
+};
 
-  const handleEditPatient = (id) => {
-    alert(`Edit patient ${id} - This would open an edit form`);
-  };
+//  Edit Patient
+  const handleUpdatePatient = async (id, updatedData) => {
+    try {
+      const res = await axios.put(
+        `${API_URL}/admin/patients/${id}`,
+        updatedData,
+        { withCredentials: true }
+      );
 
-  const handleDeletePatient = (id) => {
-    if (confirm("Are you sure you want to delete this patient record?")) {
-      setPatients(prev => prev.filter(p => p.id !== id));
+      setPatients(prev =>
+        prev.map(p => (p._id === id ? res.data.data : p))
+      );
+      setEditingPatient(null);
+      
+    } catch (err) {
+      console.error("Error fetching patient details:", err);
+      
     }
   };
 
-  const handleUploadReport = (patientId) => {
-    alert(`Upload medical report for patient ${patientId} - This would open file upload dialog`);
+ //  Delete Patient
+  const handleDeletePatient = async (id) => {
+   
+
+    try {
+      await axios.delete(`${API_URL}/admin/patients/${id}`, {
+        withCredentials: true,
+      });
+
+      setPatients(prev => prev.filter(p => p._id !== id));
+      setDeletingPatient(null);
+      
+    } catch (err) {
+      console.error("Error fetching patient details:", err);
+    }
   };
 
-  const handleDownloadReport = (reportName) => {
-    alert(`Download ${reportName} - This would download the file`);
-  };
+   // 📎 Upload Report
+  // const handleUploadReport = async (id) => {
+  //   if (!fileUpload) return alert("Please select a file");
+
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("file", fileUpload);
+
+  //     await axios.post(
+  //       `http://localhost:5001/admin/patients/${id}/upload`,
+  //       formData,
+  //       {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //         withCredentials: true,
+  //       }
+  //     );
+
+  //     alert("Report uploaded successfully");
+  //     setFileUpload(null);
+  //   } catch (err) {
+  //     alert("Upload failed");
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -182,34 +196,34 @@ const PatientRecords = ()  => {
               </div>
 
               {/* Add Patient Button */}
-              <button
+              {/* <button
                 onClick={handleAddPatient}
                 className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Patient
-              </button>
+              </button> */}
             </div>
           </div>
 
           {/* Patient Cards - Mobile View */}
           <div className="md:hidden space-y-4">
             {filteredPatients.map((patient) => (
-              <div key={patient.id} className="bg-white rounded-lg shadow p-4">
+              <div key={patient._id} className="bg-white rounded-lg shadow p-4">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-medium text-gray-900">{patient.name}</h3>
-                    <p className="text-sm text-gray-500">{patient.matricNo} • {patient.age}y • {patient.gender}</p>
+                    <h3 className="font-medium text-gray-900">{patient.firstname} {patient.lastname}</h3>
+                    <p className="text-sm text-gray-500">{patient.matric} • {patient.age}y • {patient.gender}</p>
                   </div>
                   <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                    {patient.bloodGroup}
+                    {patient.bloodgroup}
                   </span>
                 </div>
                 
                 <div className="text-sm text-gray-600 mb-3 space-y-1">
                   <div className="flex items-center">
                     <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
-                    <span>{patient.phone}</span>
+                    <span>{patient.phonenumber}</span>
                   </div>
                   <div className="flex items-center">
                     <Mail className="h-4 w-4 mr-2 flex-shrink-0" />
@@ -219,28 +233,22 @@ const PatientRecords = ()  => {
 
                 <div className="border-t pt-3 mt-3 flex flex-wrap gap-2">
                   <button
-                    onClick={() => handleViewPatient(patient)}
+                    onClick={() => handleView(patient._id)}
                     className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                   >
                     <Eye className="h-3 w-3 mr-1" />
                     View
                   </button>
                   <button
-                    onClick={() => handleEditPatient(patient.id)}
+                    onClick={() => setEditingPatient(patient)}
                     className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
                   >
                     <Edit className="h-3 w-3 mr-1" />
                     Edit
                   </button>
+                 
                   <button
-                    onClick={() => handleUploadReport(patient.id)}
-                    className="inline-flex items-center px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700"
-                  >
-                    <Upload className="h-3 w-3 mr-1" />
-                    Upload
-                  </button>
-                  <button
-                    onClick={() => handleDeletePatient(patient.id)}
+                    onClick={() => setDeletingPatient(patient)}
                     className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
                   >
                     <Trash2 className="h-3 w-3 mr-1" />
@@ -276,53 +284,55 @@ const PatientRecords = ()  => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredPatients.map((patient) => (
-                    <tr key={patient.id} className="hover:bg-gray-50">
+                    <tr key={patient._id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {patient.name}
+                            {patient.firstname} {patient.lastname}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {patient.matricNo} • {patient.age}y • {patient.gender}
+                             {patient.matric || "N/A"} • {patient.age ? `${patient.age}y` : "N/A"} • {patient.gender}
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{patient.phone}</div>
+                        <div className="text-sm text-gray-900">{patient.phonenumber}</div>
                         <div className="text-sm text-gray-500">{patient.email}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {new Date(patient.lastVisit).toLocaleDateString()}
+                        {patient.lastVisit ? new Date(patient.lastVisit).toLocaleDateString() : "—"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                          {patient.bloodGroup}
+                          {patient.bloodgroup || '-'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                         <button
-                          onClick={() => handleViewPatient(patient)}
+                          onClick={() => handleView(patient._id)}
                           className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
                         >
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </button>
                         <button
-                          onClick={() => handleEditPatient(patient.id)}
+                          onClick={() => setEditingPatient(patient)}
                           className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
                         >
                           <Edit className="h-3 w-3 mr-1" />
                           Edit
                         </button>
-                        <button
-                          onClick={() => handleUploadReport(patient.id)}
+                        
+                        {/* <button
+                          onClick={() => handleUploadReport(patient._id)}
                           className="inline-flex items-center px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700"
                         >
                           <Upload className="h-3 w-3 mr-1" />
+                          <input type="file" onChange={(e) => setFileUpload(e.target.files[0])} />
                           Upload
-                        </button>
+                        </button> */}
                         <button
-                          onClick={() => handleDeletePatient(patient.id)}
+                          onClick={() => setDeletingPatient(patient)}
                           className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
                         >
                           <Trash2 className="h-3 w-3 mr-1" />
@@ -350,12 +360,12 @@ const PatientRecords = ()  => {
               </div>
               <div className="text-sm text-gray-500">Recent Visits (7 days)</div>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow">
+            {/* <div className="bg-white p-4 rounded-lg shadow">
               <div className="text-2xl font-bold text-green-600">
-                {filteredPatients.reduce((acc, p) => acc + p.reports.length, 0)}
+                {filteredPatients.reduce((acc, p) => acc + p.reports?.length, 0)}
               </div>
               <div className="text-sm text-gray-500">Medical Reports</div>
-            </div>
+            </div> */}
             <div className="bg-white p-4 rounded-lg shadow">
               <div className="text-2xl font-bold text-yellow-600">
                 {filteredPatients.filter(p => p.allergies !== "None").length}
@@ -367,7 +377,7 @@ const PatientRecords = ()  => {
       </div>
 
       {/* Patient Details Modal */}
-      {showViewModal && selectedPatient && (
+      { showViewModal && selectedPatient && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen px-4">
             <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setShowViewModal(false)}></div>
@@ -390,20 +400,20 @@ const PatientRecords = ()  => {
                     <div className="space-y-3">
                       <div className="flex items-center">
                         <User className="h-4 w-4 text-gray-400 mr-2" />
-                        <span className="text-sm"><strong>Name:</strong> {selectedPatient.name}</span>
+                        <span className="text-sm"><strong>Name:</strong> {selectedPatient.firstname} {selectedPatient.lastname}</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="text-sm"><strong>Matric No:</strong> {selectedPatient.matricNo}</span>
+                        <span className="text-sm"><strong>Matric:</strong> {selectedPatient.matric}</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="text-sm"><strong>Age:</strong> {selectedPatient.age} years</span>
+                        <span className="text-sm"><strong>Age:</strong>  {selectedPatient.age ? `${selectedPatient.age} years` : "N/A"} </span>
                       </div>
                       <div className="flex items-center">
                         <span className="text-sm"><strong>Gender:</strong> {selectedPatient.gender}</span>
                       </div>
                       <div className="flex items-center">
                         <Phone className="h-4 w-4 text-gray-400 mr-2" />
-                        <span className="text-sm">{selectedPatient.phone}</span>
+                        <span className="text-sm">{selectedPatient.phonenumber}</span>
                       </div>
                       <div className="flex items-center">
                         <Mail className="h-4 w-4 text-gray-400 mr-2" />
@@ -422,12 +432,16 @@ const PatientRecords = ()  => {
                     <div className="space-y-3">
                       <div className="flex items-center">
                         <CalendarIcon className="h-4 w-4 text-gray-400 mr-2" />
-                        <span className="text-sm"><strong>Last Visit:</strong> {new Date(selectedPatient.lastVisit).toLocaleDateString()}</span>
+                        <span className="text-sm"><strong className="mr-2">Last Visit:</strong> 
+                          {selectedPatient.lastVisit 
+                            ? new Date(selectedPatient.lastVisit).toLocaleDateString() 
+                            : "—"}
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <span className="text-sm"><strong>Blood Group:</strong> 
                           <span className="ml-2 inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                            {selectedPatient.bloodGroup}
+                            {selectedPatient.bloodgroup}
                           </span>
                         </span>
                       </div>
@@ -437,9 +451,9 @@ const PatientRecords = ()  => {
                       <div>
                         <span className="text-sm"><strong>Medical History:</strong></span>
                         <ul className="mt-1 list-disc list-inside text-sm text-gray-600">
-                          {selectedPatient.medicalHistory.map((item, index) => (
+                          {/* {selectedPatient.medicalHistory.map((item, index) => (
                             <li key={index}>{item}</li>
-                          ))}
+                          ))} */}
                         </ul>
                       </div>
                     </div>
@@ -450,7 +464,7 @@ const PatientRecords = ()  => {
                 <div className="mt-6">
                   <h4 className="text-md font-semibold text-gray-900 border-b pb-2 mb-4">Medical Reports</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {selectedPatient.reports.map((report, index) => (
+                    {selectedPatient.reports?.map((report, index) => (
                       <div key={index} className="border rounded-lg p-4 hover:bg-gray-50">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
@@ -480,8 +494,102 @@ const PatientRecords = ()  => {
         </div>
       )}
 
+      {/* ✏️ Edit Modal */}
+      {editingPatient && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-lg w-full max-w-lg p-6">
+            <h3 className="text-xl font-semibold mb-4">Edit Patient</h3>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpdatePatient(editingPatient._id, editingPatient);
+            }}
+            className="space-y-3"
+          >
+            <input
+              type="text"
+              value={editingPatient.firstname || ""}
+              onChange={(e) =>
+                setEditingPatient({ ...editingPatient, firstname: e.target.value })
+              }
+              placeholder="First Name"
+              required
+              className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300"
+            />
+
+            <input
+                type="text"
+            value={editingPatient.lastname || ""}
+            onChange={(e) =>
+              setEditingPatient({ ...editingPatient, lastname: e.target.value })
+            }
+            placeholder="Last Name"
+            required
+            className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300"
+          />
+
+          <input
+            type="text"
+            value={editingPatient.address || ""}
+            onChange={(e) =>
+              setEditingPatient({ ...editingPatient, address: e.target.value })
+            }
+            placeholder="Address"
+            className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-300"
+          />
+
+              <div className="flex justify-end gap-3 pt-3">
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingPatient(null)}
+                  className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+)}
+
+{/* 🗑️ Delete Modal */}
+{deletingPatient && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+      <h3 className="text-xl font-semibold mb-4">Delete Patient</h3>
+      <p className="mb-6">
+        Are you sure you want to delete{" "}
+        <b>{deletingPatient.firstname} {deletingPatient.lastname}</b>?
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => handleDeletePatient(deletingPatient._id)}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+        >
+          Yes, Delete
+        </button>
+        <button
+          onClick={() => setDeletingPatient(null)}
+          className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+  )}
+
+
       {/* Add Patient Modal */}
-      {showAddModal && (
+      {/* {showAddModal && (
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen px-4">
             <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setShowAddModal(false)}></div>
@@ -528,7 +636,7 @@ const PatientRecords = ()  => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

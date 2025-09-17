@@ -8,19 +8,24 @@ import axios from 'axios';
 const Signup = () => {
   const [message, setMessage] = useState('')
   let navigate = useNavigate();
-   let url = 'http://localhost:5001/auth/signup'
+
+  const API_URL = import.meta.env.VITE_API_URL;
+  
 
    let formik = useFormik({
       initialValues: {
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        bloodgroup: '',
+        dob: '',
+        address: "",
       },
       onSubmit: (values) => {
         console.log(values)
-        axios.post(url,values, {
+        axios.post(`${API_URL}/auth/signup`,values, {
           headers: {
             'Content-Type': 'application/json'
           }
@@ -28,7 +33,7 @@ const Signup = () => {
         .then((response)=>{
           console.log(response.data)
           if (response.data.status) {
-            navigate('/')
+            navigate('/auth/login')
           } else {
             setMessage(response.data.message)
           }
@@ -38,27 +43,32 @@ const Signup = () => {
         })
       },
       validationSchema:yup.object({
-        firstName:yup.string().required('This field is required'),
-        lastName:yup.string().required('This field is required'),
+        firstname:yup.string().required('This field is required'),
+        lastname:yup.string().required('This field is required'),
         email:yup.string().required('This field is required'),
         password:yup.string().min(6, 'Password must be at least 6 characters').required('This field is required'),
-        confirmPassword:yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('This field is required')
+        confirmPassword:yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('This field is required'),
+        bloodgroup:yup.string().required('This field is required'),
+        dob:yup.string().required('This field is required'),
+        address:yup.string().required("Address is required"),
         })
     })
    
   const [showPassword, setShowPassword] = useState(false);
-  
-  // const [errors, setErrors] = useState({});
-
- 
-
-
-
-
+  const bloodOptions = [
+    { value: '', label: 'Select Blood Group' },
+    {value: 'A+', label: 'A+'},
+    {value: 'A-', label: 'A-'},
+    {value: 'B+', label: 'B+'},
+    {value: 'B-', label: 'B-'},
+    {value: 'AB+', label: 'AB+'},
+    {value: 'AB-', label: 'AB-'},
+    {value: 'O+', label: 'O+'},
+    {value: 'O-', label: 'O-'}
+  ]
 
   return (
     <>
-    
     <div className="min-h-screen bg-clinic-light-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -90,20 +100,20 @@ const Signup = () => {
                     <User className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
-                    id="firstName"
-                    name="firstName"
+                    id="firstname"
+                    name="firstname"
                     type="text"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     placeholder="First name"
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-clinic-blue focus:border-transparent outline-none transition-all duration-200 ${
-                      formik.errors.firstName && formik.touched.firstName ? 'border-red-600' : 'border-clinic-neutral-border'
+                      formik.errors.firstname && formik.touched.firstname ? 'border-red-600' : 'border-clinic-neutral-border'
                     }`}
                     required
                   />
                 </div>
-                {formik.errors.firstName && formik.touched.firstName && (
-                  <p className="text-red-600 text-sm mt-1">{formik.errors.firstName}</p>
+                {formik.errors.firstname && formik.touched.firstname && (
+                  <p className="text-red-600 text-sm mt-1">{formik.errors.firstname}</p>
                 )}
               </div>
 
@@ -117,20 +127,20 @@ const Signup = () => {
                     <User className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
-                    id="lastName"
-                    name="lastName"
+                    id="lastname"
+                    name="lastname"
                     type="text"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     placeholder="Last name"
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-clinic-blue focus:border-transparent outline-none transition-all duration-200 ${
-                      formik.errors.lastName && formik.touched.lastName ? 'border-red' : 'border-clinic-neutral-border'
+                      formik.errors.lastname && formik.touched.lastname ? 'border-red' : 'border-clinic-neutral-border'
                     }`}
                     required
                   />
                 </div>
-                {formik.errors.lastName && formik.touched.lastName && (
-                  <p className="text-red-600 text-sm mt-1">{formik.errors.lastName}</p>
+                {formik.errors.lastname && formik.touched.lastname && (
+                  <p className="text-red-600 text-sm mt-1">{formik.errors.lastname}</p>
                 )}
               </div>
             </div>
@@ -200,14 +210,7 @@ const Signup = () => {
               {formik.errors.password && formik.touched.password && (
                 <p className="text-red-600 text-sm mt-1">{formik.errors.password}</p>
               )}
-              {/* Password Strength Indicator */}
-              {/* {formData.password && (
-                <div className="mt-2">
-                  <p className={`text-sm ${passwordStrength.color}`}>
-                    Password strength: {passwordStrength.level}
-                  </p>
-                </div>
-              )} */}
+              
             </div>
             {/*Confirm Password*/}
              <div>
@@ -246,20 +249,66 @@ const Signup = () => {
               {formik.errors.confirmPassword && formik.touched.confirmPassword && (
                 <p className="text-red-600 text-sm mt-1">{formik.errors.confirmPassword}</p>
               )}
-              {/* Password Strength Indicator */}
-              {/* {formData.password && (
-                <div className="mt-2">
-                  <p className={`text-sm ${passwordStrength.color}`}>
-                    Password strength: {passwordStrength.level}
-                  </p>
-                </div>
-              )} */}
+             
             </div>
+             {/*Blood Group*/}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Blood Group</label>
+              <select
+                name="bloodgroup"
+                value={formik.values.bloodgroup}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="w-full border py-3 pl-3 rounded-lg border-clinic-neutral-border focus:ring-2 focus:ring-clinic-blue focus:border-transparent outline-none transition-all duration-200"
+              >
+                {bloodOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              {formik.touched.bloodgroup && formik.errors.bloodgroup && (
+                <p className="text-red-500 text-sm">{formik.errors.bloodgroup}</p>
+              )}
+            </div>
+
+          {/*D.O.B*/}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+            <input
+              name="dob"
+              type="date"
+              max={new Date().toISOString().split("T")[0]}
+              value={formik.values.dob}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="w-full border py-3 pl-3 rounded-lg border-clinic-neutral-border focus:ring-2 focus:ring-clinic-blue focus:border-transparent outline-none transition-all duration-200"
+            />
+            {formik.touched.dob && formik.errors.dob && (
+              <p className="text-red-500 text-sm">{formik.errors.dob}</p>
+            )}
+          </div>
+
+          {/*Address*/}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+          <input
+            name="address"
+            type='text'
+            value={formik.values.address}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className="w-full border py-3 pl-3 rounded-lg border-clinic-neutral-border focus:ring-2 focus:ring-clinic-blue focus:border-transparent outline-none transition-all duration-200"
+          />
+          {formik.touched.address && formik.errors.address && (
+            <p className="text-red-500 text-sm">{formik.errors.address}</p>
+          )}
+        </div>
 
             {/* Sign Up Button */}
             <button
               type="submit"
-              className="w-full bg-[#4CAF50] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#43A047] transition-colors duration-200 focus:ring-2 focus:ring-clinic-green focus:ring-offset-2"
+              className="w-full bg-[#4CAF50] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#43A047] transition-colors duration-200 focus:ring-2 focus:ring-clinic-green focus:ring-offset-2 cursor-pointer"
             >
               Sign Up
             </button>

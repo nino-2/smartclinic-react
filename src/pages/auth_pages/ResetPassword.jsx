@@ -1,88 +1,72 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
-
+import { useFormik } from 'formik';
+import  *as yup  from 'yup'
+import axios from 'axios'
 
 const ResetPassword = () => {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
+   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
 
+  const emailFromUrl = new URLSearchParams(location.search).get("email");
+  const emailFromState = location.state?.email;
+   // Get email from previous page
+  const email = emailFromUrl || emailFromState || "";
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  // let url = 'http://localhost:5001/auth/reset'
+
   
-  // Get email from previous page
-  const email = location.state?.email || '';
+  const formik = useFormik({
+    initialValues: {
+      email: email,
+      newPassword: "",
+      confirmPassword: "",
+    },
+    validationSchema: yup.object({
+      newPassword: yup
+        .string()
+        .required("New password is required")
+        .min(6, "Password must be at least 6 characters"),
+      confirmPassword: yup
+        .string()
+        .oneOf([yup.ref("newPassword"), null], "Passwords must match")
+        .required("Confirm password is required"),
+    }),
+    onSubmit: async (values, { setSubmitting, setErrors }) => {
+      try {
+        const response = await axios.post(`${API_URL}/auth/reset`,  {
+          email: values.email,
+          newPassword: values.newPassword,
+        });
 
-  const validatePassword = (password) => {
-    const minLength = password.length >= 8;
-    const hasUpper = /[A-Z]/.test(password);
-    const hasLower = /[a-z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    
-    return {
-      minLength,
-      hasUpper,
-      hasLower,
-      hasNumber,
-      isValid: minLength && hasUpper && hasLower && hasNumber
-    };
-  };
+        if (response.data.status) {
+          // ✅ Password reset success
+          navigate("/auth/login", { state: { message: "Password reset successful. Please log in." } });
+        } else {
+          setErrors({ confirmPassword: response.data.message });
+        }
+      } catch (error) {
+        console.error(error);
+        setErrors({
+          confirmPassword: error.response?.data?.message || "Server error",
+        });
+      } finally {
+        setIsLoading(false);
+        setSubmitting(false);
+      }
+    },
+  });
 
-  const passwordValidation = validatePassword(newPassword);
-  const passwordsMatch = newPassword === confirmPassword && confirmPassword !== '';
+  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!passwordValidation.isValid) {
-      toast({
-        title: "Invalid Password",
-        description: "Password must meet all requirements",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!passwordsMatch) {
-      toast({
-        title: "Passwords Don't Match",
-        description: "Please ensure both passwords are identical",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // Simulate API call for password reset
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "Password Reset Successful",
-        description: "Your password has been updated successfully",
-        variant: "default",
-      });
-      
-      // Navigate back to login page
-      navigate('/', { 
-        state: { 
-          message: "Password reset successful! Please login with your new password." 
-        } 
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to reset password. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[#F5F9FF]">
@@ -103,7 +87,7 @@ const ResetPassword = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={formik.handleSubmit} className="space-y-6">
             {/* Email Field (Read-only) */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -135,13 +119,19 @@ const ResetPassword = () => {
                 <input
                   id="newPassword"
                   type={showNewPassword ? 'text' : 'password'}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  name='newPassword'
+                  value={formik.values.newPassword}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.newPassword && formik.errors.newPassword}
                   placeholder="Enter new password"
                   className="w-full pl-10 pr-12 py-3 border border-[#E0E0E0] rounded-lg outline-none transition-all duration-200 focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20"
                   required
                   disabled={isLoading}
                 />
+                {formik.touched.newPassword && formik.errors.newPassword && (
+                  <p className="text-xs text-[#EF4444] mt-1">{formik.errors.newPassword}</p>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
@@ -157,30 +147,6 @@ const ResetPassword = () => {
               </div>
             </div>
 
-            {/* Password Requirements */}
-            {newPassword && (
-              <div className="bg-[#F1F8E9] border border-[#C8E6C9] rounded-lg p-4">
-                <p className="text-sm font-medium text-gray-700 mb-2">Password Requirements:</p>
-                <div className="space-y-1">
-                  <div className={`flex items-center space-x-2 text-xs ${passwordValidation.minLength ? 'text-[#4CAF50]' : 'text-gray-500'}`}>
-                    <CheckCircle className={`w-3 h-3 ${passwordValidation.minLength ? 'text-[#4CAF50]' : 'text-gray-400'}`} />
-                    <span>At least 8 characters</span>
-                  </div>
-                  <div className={`flex items-center space-x-2 text-xs ${passwordValidation.hasUpper ? 'text-[#4CAF50]' : 'text-gray-500'}`}>
-                    <CheckCircle className={`w-3 h-3 ${passwordValidation.hasUpper ? 'text-[#4CAF50]' : 'text-gray-400'}`} />
-                    <span>One uppercase letter</span>
-                  </div>
-                  <div className={`flex items-center space-x-2 text-xs ${passwordValidation.hasLower ? 'text-[#4CAF50]' : 'text-gray-500'}`}>
-                    <CheckCircle className={`w-3 h-3 ${passwordValidation.hasLower ? 'text-[#4CAF50]' : 'text-gray-400'}`} />
-                    <span>One lowercase letter</span>
-                  </div>
-                  <div className={`flex items-center space-x-2 text-xs ${passwordValidation.hasNumber ? 'text-[#4CAF50]' : 'text-gray-500'}`}>
-                    <CheckCircle className={`w-3 h-3 ${passwordValidation.hasNumber ? 'text-[#4CAF50]' : 'text-gray-400'}`} />
-                    <span>One number</span>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Confirm Password Field */}
             <div>
@@ -193,14 +159,19 @@ const ResetPassword = () => {
                 </div>
                 <input
                   id="confirmPassword"
+                  name='confirmPassword'
                   type={showConfirmPassword ? 'text' : 'password'}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={formik.values.confirmPassword}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Confirm new password"
                   className="w-full pl-10 pr-12 py-3 border border-[#E0E0E0] rounded-lg outline-none transition-all duration-200 focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20"
                   required
                   disabled={isLoading}
                 />
+                 {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+                  <p className="text-xs text-[#EF4444] mt-1">{formik.errors.confirmPassword}</p>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -214,19 +185,13 @@ const ResetPassword = () => {
                   )}
                 </button>
               </div>
-              {confirmPassword && !passwordsMatch && (
-                <p className="text-xs text-[#EF4444] mt-1">Passwords do not match</p>
-              )}
-              {confirmPassword && passwordsMatch && (
-                <p className="text-xs text-[#4CAF50] mt-1">Passwords match</p>
-              )}
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading || !passwordValidation.isValid || !passwordsMatch}
-              className="w-full bg-[#1976D2] hover:bg-[#0D47A1] text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
+              className="w-full bg-[#1976D2] hover:bg-[#0D47A1] text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">

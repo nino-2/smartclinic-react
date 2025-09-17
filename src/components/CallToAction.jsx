@@ -1,7 +1,8 @@
 "use client";
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const CallToAction = ({ startChat, bookAppointment }) => {
+const CallToAction = () => {
   return (
     <section className="py-16 max-sm:py-12 bg-white">
       <div className="max-w-4xl mx-auto px-4 max-sm:px-3 text-center">
@@ -13,8 +14,9 @@ const CallToAction = ({ startChat, bookAppointment }) => {
           assistant for their healthcare needs.
         </p>
         <div className="flex max-sm:flex-col gap-4 justify-center">
+          
+          <Link to='/smartclinic'>
           <button
-            onClick={startChat}
             className="bg-[#1976D2] text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:bg-[#1565C0]"
           >
             💬 Start Chatting Now
@@ -32,12 +34,16 @@ const CallToAction = ({ startChat, bookAppointment }) => {
               />
             </svg>
           </button>
+          </Link>
+
+          <Link to='/appointment'>
           <button
-            onClick={bookAppointment}
+            
             className="bg-white text-[#1976D2] border-2 border-[#1976D2] py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-200 hover:bg-[#E3F2FD]"
           >
             Book Appointment
           </button>
+          </Link>
         </div>
       </div>
     </section>

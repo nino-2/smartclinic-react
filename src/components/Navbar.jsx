@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, {  useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+
 
 
 const Navbar = ({
@@ -9,12 +12,21 @@ const Navbar = ({
   toggleMobileMenu,
   closeMobileMenu,
   navigateTo,
-  isLoggedIn,
-  firstName,
-  handleLogout,
-  bookAppointment, 
+  bookAppointment,
+  ...props 
 }) => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const {isLoggedIn, firstname, handleLogout, loading} = useAuth();
+  const navigate = useNavigate()
+
+  const handleClickLogout = async() => {
+    await handleLogout()
+    navigate('/')
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <header className="bg-white shadow-sm border-b border-[#E3F2FD] sticky top-0 z-40">
@@ -39,7 +51,7 @@ const Navbar = ({
           <nav className="hidden lg:flex items-center gap-8">
             <Link to="/">
             <button
-              onClick={() => navigateTo('home')}
+              
               style={{
                 color: currentPage === 'home' ? '#1976D2' : '#666',
                 fontWeight: currentPage === 'home' ? '600' : '400'
@@ -51,7 +63,7 @@ const Navbar = ({
             </Link>
             <Link to='/appointment'>
             <button
-              onClick={bookAppointment}
+             
               className="text-[#666] font-medium transition-colors duration-200 cursor-pointer"
             >
               Book Appointment
@@ -60,7 +72,6 @@ const Navbar = ({
             <Link to='/faq'>
             
             <button
-              onClick={() => navigateTo('contact')}
               style={{
                 color: currentPage === 'contact' ? '#1976D2' : '#666',
                 fontWeight: currentPage === 'contact' ? '600' : '400'
@@ -78,7 +89,7 @@ const Navbar = ({
                   onClick={() => setShowUserDropdown(!showUserDropdown)}
                   className="flex items-center gap-2 text-[#666] font-medium transition-colors duration-200 cursor-pointer hover:text-[#1976D2]"
                 >
-                  <span>Welcome, {firstName}</span>
+                  <span>Welcome, {firstname}</span>
                   <svg 
                     className={`w-4 h-4 transition-transform duration-200 ${showUserDropdown ? 'rotate-180' : ''}`}
                     fill="none" 
@@ -93,7 +104,7 @@ const Navbar = ({
                 {showUserDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <button
-                      onClick={handleLogout}
+                      onClick={handleClickLogout}
                       className="w-full text-left px-4 py-2 text-[#666] hover:bg-[#F5F5F5] hover:text-[#1976D2] transition-colors duration-200"
                     >
                       Logout
@@ -104,7 +115,7 @@ const Navbar = ({
             ) : (
               <Link to='/auth/login'>
                 <button
-                  onClick={() => navigateTo('login')}
+                  
                   style={{
                     color: currentPage === 'login' ? '#1976D2' : '#666',
                     fontWeight: currentPage === 'login' ? '600' : '400'
@@ -163,14 +174,13 @@ const Navbar = ({
           {/* Mobile User Welcome Section */}
           {isLoggedIn && (
             <div className="mb-6 p-3 bg-[#E3F2FD] rounded-lg">
-              <p className="text-sm text-[#1976D2] font-medium">Welcome, {firstName}!</p>
+              <p className="text-sm text-[#1976D2] font-medium">Welcome, {firstname}!</p>
             </div>
           )}
 
           <nav className="flex flex-col gap-4">
             <Link to='/'>
             <button
-              onClick={() => navigateTo('home')}
               style={{
                 color: currentPage === 'home' ? '#1976D2' : '#666',
                 backgroundColor: currentPage === 'home' ? '#E3F2FD' : 'transparent'
@@ -191,7 +201,7 @@ const Navbar = ({
 
             <Link to='/faq'>
             <button
-              onClick={() => navigateTo('contact')}
+              
               style={{
                 color: currentPage === 'contact' ? '#1976D2' : '#666',
                 backgroundColor: currentPage === 'contact' ? '#E3F2FD' : 'transparent'
@@ -204,7 +214,7 @@ const Navbar = ({
             {/* Conditional Mobile Login/Logout */}
             {isLoggedIn ? (
               <button
-                onClick={handleLogout}
+                onClick={handleClickLogout}
                 className="p-3 rounded-lg font-medium text-[#666] transition-all duration-200 cursor-pointer text-left hover:bg-[#F5F5F5] hover:text-[#1976D2]"
               >
                 Logout
@@ -212,7 +222,7 @@ const Navbar = ({
             ) : (
               <Link to='/auth/login'>
               <button
-                onClick={() => navigateTo('login')}
+                
                 style={{
                   color: currentPage === 'login' ? '#1976D2' : '#666',
                   backgroundColor: currentPage === 'login' ? '#E3F2FD' : 'transparent'

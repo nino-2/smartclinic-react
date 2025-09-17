@@ -20,7 +20,7 @@ const FqSection = () => {
       id: "faq1",
       question: "What are the clinic operating hours?",
       answer:
-        "Our clinic is open Monday-Friday from 8:00 AM to 4:00 PM, and Saturday from 9:00 AM to 3:00 PM. Emergency services are available 24/7 for urgent medical needs.",
+        "Our clinic is open Monday-Friday from 8:00 AM to 6:00 PM, and Saturday from 8:00 AM to 6:00 PM. Emergency services are available 24/7 for urgent medical needs.",
     },
     {
       id: "faq2",

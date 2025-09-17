@@ -4,20 +4,20 @@ import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useFormik } from 'formik';
 import *as yup from 'yup';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 
 
 const Login = () => {
+  const {setIsLoggedIn, setFirstname} = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const [errormsg, setErrorMsg] = useState('')
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log('Login attempt:', { email, password });
-  // };
+
 
   let navigate = useNavigate();
-  let url = 'http://localhost:5001/auth/login'
+  const API_URL = import.meta.env.VITE_API_URL;
+  
 
   let formik = useFormik({
     initialValues:{
@@ -26,14 +26,18 @@ const Login = () => {
     },
     onSubmit: (values) => {
       console.log(values)
-      axios.post(url, values, {
+      axios.post(`${API_URL}/auth/login`, values, {
         headers: {
-          'Content-Type': 'application/json'
-      }
+          'Content-Type': 'application/json',
+
+      },
+      withCredentials: true
   })
   .then((response) => {
-    console.log(response.data)
+    
     if (response.data.status) {
+       setIsLoggedIn(true);
+       setFirstname(response.data.user.firstname);
       navigate('/')
     } else {
       setErrorMsg(response.data.message)
@@ -41,6 +45,7 @@ const Login = () => {
   })
   .catch((error) => {
     console.log(error)
+     setErrorMsg(error.response?.data?.message || 'Login failed');
   })
 },
   validationSchema:yup.object({
@@ -71,6 +76,7 @@ const Login = () => {
           </div>
 
           <form onSubmit={formik.handleSubmit} className="space-y-6">
+            <p className='text-red-600 text-sm mt-1 text-center'>{errormsg}</p>
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -136,7 +142,7 @@ const Login = () => {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full bg-[#1976D2] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#1565C0] transition-colors duration-200 focus:ring-2 focus:ring-clinic-blue focus:ring-offset-2"
+              className="w-full bg-[#1976D2] text-white py-3 px-4 rounded-lg font-medium hover:bg-[#1565C0] transition-colors duration-200 focus:ring-2 focus:ring-clinic-blue focus:ring-offset-2 cursor-pointer"
             >
               Login
             </button>

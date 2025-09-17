@@ -1,51 +1,54 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Lock, Shield, Eye, EyeOff } from 'lucide-react';
+import { useFormik } from 'formik';
+import *as yup from 'yup' 
+import axios from 'axios';
 
  const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [errormsg, setErrorMsg] = useState('')
   const [isLoading, setIsLoading] = useState(false);
+
+
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  // let url = 'http://localhost:5001/admin/login'
   
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  let formik = useFormik({
+    initialValues: {
+      username: '',
+      password: ''
+    },
+    onSubmit: async (values) => {
     setIsLoading(true);
-
+    setErrorMsg("");
     try {
-      // Simulate API call for authentication
-      // Replace this with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock authentication logic
-      if (username === 'admin' && password === 'admin123') {
-        toast({
-          title: "Login Successful",
-          description: "Welcome to the MAPOLY Smart Clinic Dashboard",
-          variant: "default",
-        });
-        
-        // Redirect to admin dashboard
-        navigate('/admin/dashboard');
+      const response = await axios.post(`${API_URL}/admin/login`, values, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+      });
+
+      if (response.data.status) {
+        navigate("/admin/dashboard");
       } else {
-        toast({
-          title: "Login Failed",
-          description: "Invalid username or password. Please try again.",
-          variant: "destructive",
-        });
+        setErrorMsg(response.data.message || "Login failed");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      setErrorMsg(error.response?.data?.message || "Login failed");
     } finally {
       setIsLoading(false);
     }
-  };
+    },
+
+      validationSchema: yup.object({
+        username:yup.string().required('Username is required'),
+        password:yup.string().required('Password is required')
+      })
+
+  })
 
   return (
     <div className="min-h-screen bg-[#F5F9FF] flex items-center justify-center p-4">
@@ -67,11 +70,14 @@ import { User, Lock, Shield, Eye, EyeOff } from 'lucide-react';
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={formik.handleSubmit} className="space-y-6">
+            {errormsg && (
+                <p className="text-red-600 text-sm text-center">{errormsg}</p>
+              )}
             {/* Username Field */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Username
+                Email
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -79,15 +85,20 @@ import { User, Lock, Shield, Eye, EyeOff } from 'lucide-react';
                 </div>
                 <input
                   id="username"
+                  name='username'
                   type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
                   placeholder="Enter admin username"
                   className="w-full pl-10 pr-4 py-3 border border-clinic-neutral-border rounded-lg focus:ring-2 focus:ring-clinic-dark-blue focus:border-transparent outline-none transition-all duration-200"
                   required
                   disabled={isLoading}
                 />
+                
               </div>
+              {formik.errors.username && formik.touched.username && (
+                  <p className="text-red-600 text-sm mt-1">{formik.errors.username}</p>
+                )}
             </div>
 
             {/* Password Field */}
@@ -101,9 +112,10 @@ import { User, Lock, Shield, Eye, EyeOff } from 'lucide-react';
                 </div>
                 <input
                   id="password"
+                  name='password'
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
                   placeholder="Enter admin password"
                   className="w-full pl-10 pr-12 py-3 border border-clinic-neutral-border rounded-lg focus:ring-2 focus:ring-clinic-dark-blue focus:border-transparent outline-none transition-all duration-200"
                   required
@@ -122,6 +134,8 @@ import { User, Lock, Shield, Eye, EyeOff } from 'lucide-react';
                   )}
                 </button>
               </div>
+              
+
             </div>
 
             {/* Future 2FA/CAPTCHA Section */}

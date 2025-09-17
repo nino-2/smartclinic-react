@@ -1,143 +1,89 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, Shield } from 'lucide-react';
+import { useFormik } from 'formik';
+import  *as yup  from 'yup'
+import axios from 'axios';
 
 const VerifyOTP = ()  =>{
-  const [otp, setOtp] = useState(['', '', '', '']);
-  const [isLoading, setIsLoading] = useState(false);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
   
-  
-  // Get email from previous page
-  const email = location.state?.email || '';
+  const emailFromUrl = new URLSearchParams(location.search).get("email");
+  const emailFromState = location.state?.email;
+   // Get email from previous page
+  const email = emailFromUrl || emailFromState || "";
+  const API_URL = import.meta.env.VITE_API_URL;
 
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [timer, setTimer] = useState(60)
+  const [errormsg, setErrormsg] = useState('')
+
+  //countdown for resend
   useEffect(() => {
-    // Focus first input on mount
-    if (inputRefs.current[0]) {
-      inputRefs.current[0].focus();
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => setTimer((t) => t - 1), 1000);
     }
-  }, []);
+    return () => clearInterval(interval);
+  }, [timer]);
+  
+  const handleNewcode = async() => {
+        if (timer > 0) return;
+        try {
+          axios.post(`${API_URL}/auth/request`, {email})
+          setTimer(60)
+          formik.setFieldValue("otp", ["", "", "", ""]);
+          inputRefs.current[0]?.focus();
+        } catch (error) {
+          console.log('Failed to send otp')
+        }
+  }
 
+
+    let formik = useFormik({
+    initialValues:{
+      otp: ['', '', '', '']
+    },
+    validationSchema: yup.object({
+       otp: yup
+        .array()
+        .of(yup.string().matches(/^\d$/, "Must be a digit").required("Required"))
+        .length(4, "Enter all 4 digits"),
+    }),
+    onSubmit: async(values) => {
+       const otpCode = values.otp.join("");
+      setIsLoading(true);
+      try {
+        const res = await axios.post(`${API_URL}/auth/verify}`,{email, resetCode: otpCode})
+        if (res.data.status) {
+          navigate('/auth/reset-password', { state: { email } });
+        } else {
+          setErrormsg(res.data.message)
+        }
+      } catch (error) {
+        console.log(error)
+        setErrormsg(error.response.data.message)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  })
+ 
   const handleChange = (index, value) => {
-    // Only allow digits
     if (!/^\d*$/.test(value)) return;
-    
-    const newOtp = [...otp];
+    const newOtp = [...formik.values.otp];
     newOtp[index] = value;
-    setOtp(newOtp);
+    formik.setFieldValue("otp", newOtp);
 
-    // Auto-advance to next input
     if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const handleKeyDown = (index, e) => {
-    // Handle backspace
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-    
-    // Handle paste
-    if (e.key === 'Enter' && otp.every(digit => digit)) {
-      handleSubmit(e);
-    }
-  };
-
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const paste = e.clipboardData.getData('text');
-    const digits = paste.replace(/\D/g, '').slice(0, 4).split('');
-    
-    const newOtp = [...otp];
-    digits.forEach((digit, index) => {
-      if (index < 4) {
-        newOtp[index] = digit;
-      }
-    });
-    setOtp(newOtp);
-    
-    // Focus next empty input or last input
-    const nextIndex = Math.min(digits.length, 3);
-    inputRefs.current[nextIndex]?.focus();
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const otpCode = otp.join('');
-    if (otpCode.length !== 4) {
-      toast({
-        title: "Invalid OTP",
-        description: "Please enter the complete 4-digit OTP code",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // Simulate API call for OTP verification
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock verification logic (accept 1234 as valid OTP)
-      if (otpCode === '1234') {
-        toast({
-          title: "OTP Verified",
-          description: "OTP verified successfully",
-          variant: "default",
-        });
-        
-        // Navigate to reset password page with email
-        navigate('/reset-password', { state: { email } });
-      } else {
-        toast({
-          title: "Invalid OTP",
-          description: "The OTP code you entered is incorrect. Please try again.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "An error occurred while verifying OTP. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleResendOTP = async () => {
-    try {
-      // Simulate resend OTP API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "OTP Resent",
-        description: "A new OTP code has been sent to your email",
-        variant: "default",
-      });
-      
-      // Clear current OTP
-      setOtp(['', '', '', '']);
-      inputRefs.current[0]?.focus();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to resend OTP. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleBackToForgotPassword = () => {
-    navigate('/forgot-password');
-  };
-
+ 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-[#F5F9FF]">
       <div className="w-full max-w-md">
@@ -155,7 +101,7 @@ const VerifyOTP = ()  =>{
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={formik.handleSubmit} className="space-y-6">
             {/* Instructions */}
             <div className="text-center">
               <p className="text-sm text-gray-700 mb-2">
@@ -168,28 +114,30 @@ const VerifyOTP = ()  =>{
 
             {/* OTP Input Fields */}
             <div className="flex justify-center space-x-3">
-              {otp.map((digit, index) => (
+              {formik.values.otp.map((digit, index) => (
                 <input
                   key={index}
                   ref={(el) => (inputRefs.current[index] = el)}
                   type="text"
                   inputMode="numeric"
                   maxLength="1"
+                  name={`otp[${index}]`}
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
-                  onPaste={handlePaste}
                   className="w-14 h-14 text-center text-xl font-bold border border-[#E0E0E0] rounded-lg outline-none transition-all duration-200 focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20"
                   disabled={isLoading}
                 />
               ))}
             </div>
+            {formik.errors.otp && typeof formik.errors.otp === "string" && (
+            <p className="text-red-600 text-sm text-center">{formik.errors.otp}</p>
+            )}
 
             {/* Submit Button */}
-            <Link to='/auth/reset-password'>
+            
             <button
               type="submit"
-              disabled={isLoading || !otp.every(digit => digit)}
+              disabled={isLoading}
               className="w-full bg-[#1976D2] hover:bg-[#0D47A1] text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
@@ -201,7 +149,7 @@ const VerifyOTP = ()  =>{
                 'Verify OTP'
               )}
             </button>
-            </Link>
+           
 
             {/* Resend OTP */}
             <div className="text-center">
@@ -210,10 +158,11 @@ const VerifyOTP = ()  =>{
               </p>
               <button
                 type="button"
-                onClick={handleResendOTP}
-                className="text-sm text-[#1976D2] hover:underline font-medium"
+                onClick={handleNewcode}
+                disabled={timer > 0}
+                className="text-sm text-[#1976D2] hover:underline font-medium cursor-pointer"
               >
-                Resend OTP
+                {timer > 0 ? `Resend in ${timer}s` : "Resend OTP"}
               </button>
             </div>
 
@@ -229,7 +178,7 @@ const VerifyOTP = ()  =>{
         {/* Back to Forgot Password Link */}
         <div className="text-center mt-6">
           <button
-            onClick={handleBackToForgotPassword}
+            onClick={() =>navigate('/auth/forgot-password')}
             className="flex items-center justify-center space-x-2 text-sm text-[#1976D2] hover:underline transition-colors mx-auto"
           >
             <ArrowLeft className="w-4 h-4" />

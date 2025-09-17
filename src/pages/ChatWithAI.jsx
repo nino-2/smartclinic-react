@@ -6,18 +6,82 @@ import ChatMessage from '../components/chatinterface/ChatMessage'
 import QuickSuggestions from '../components/chatinterface/QuickSuggestions'
 import TypingIndicator from '../components/chatinterface/TypingIndicator'
 import Footer from '../components/Footer'
-
+import { useAuth } from '../context/AuthContext'
+import axios from 'axios'
 
 const ChatWithAI = () => {
-  const [endChat, setEndChat] = useState(() => null);
-  const [messages, setMessages] = useState(() => null);
-  const [isTyping, setIsTyping] = useState(() => null);
-  const [sendQuickMessage, setSendQuickMessage] = useState(() => null);
-  const [currentMessage, setCurrentMessage] = useState(() => null);
-  const [sendMessage, setSendMessage] = useState(() => null);
-  const [toggleRecording, setToggleRecording] = useState(() => null);
-  const [isRecording, setIsRecording] = useState(() => null);
+  
+  const [messages, setMessages] = useState([]);
+  const [currentMessage, setCurrentMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sessionId, setSessionId] = useState(null)
+  const {firstname} = useAuth();
+  const API_URL = import.meta.env.VITE_API_URL;
+
+   // End chat
+  const endChat = () => {
+    setMessages([]);
+    setCurrentMessage("");
+  };
+
+   // Send normal message
+  const sendMessage = async () => {
+    if (!currentMessage.trim()) return;
+
+    const userMsg = {
+      id: Date.now(),
+      type: "user",
+      text: currentMessage,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setCurrentMessage("");
+    setIsTyping(true);
+
+    try {
+      const { data } = await axios.post(
+        `${API_URL}/chat/message`, // adjust backend URL
+        { message: userMsg.text, sessionId },
+        { withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            },
+        }   
+      );
+
+      // store new session id from first message
+      if (data.sessionId && !sessionId) {
+        setSessionId(data.sessionId);
+      }
+      
+
+      const aiMsg = {
+        id: Date.now() + 1,
+        type: "ai",
+        text: data.reply,
+        timestamp: new Date().toLocaleTimeString(),
+      };
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch (err) {
+      console.error("Chat error:", err);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+   // Send quick suggestion
+  const sendQuickMessage = (text) => {
+    setCurrentMessage(text);
+    sendMessage();
+  };
+
+  // Toggle voice recording (placeholder)
+  const toggleRecording = () => {
+    setIsRecording((prev) => !prev);
+  };
+
   return (
     <>
       <Navbar
@@ -25,7 +89,7 @@ const ChatWithAI = () => {
         toggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
         closeMobileMenu={() => setMobileMenuOpen(false)}
       />
-            <main className="flex-1 bg-[#F8F9FA]">
+        <main className="flex-1 bg-[#F8F9FA]">
       <div className="h-screen flex flex-col">
         <ChatHeader endChat={endChat} />
 
@@ -46,7 +110,7 @@ const ChatWithAI = () => {
 
             <div className="text-center py-12">
               <h2 className="text-2xl font-semibold text-[#1976D2] mb-4">
-                Hey @FIRSTNAME, What can I help with?
+                Hey {firstname}, What can I help with?
               </h2>
             </div>
 
