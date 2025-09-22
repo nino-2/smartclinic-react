@@ -26,10 +26,7 @@ const Login = () => {
     },
     onSubmit: (values) => {
       console.log(values)
-      axios.post(`${API_URL}/auth/login`, values, {
-        headers: {
-          'Content-Type': 'application/json'}, 
-  })
+      axios.post(`${API_URL}/auth/login`, values)
   .then((response) => {
     
     if (response.data.status) {
