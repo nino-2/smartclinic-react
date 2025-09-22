@@ -28,14 +28,12 @@ const Login = () => {
       console.log(values)
       axios.post(`${API_URL}/auth/login`, values, {
         headers: {
-          'Content-Type': 'application/json',
-
-      },
-      withCredentials: true
+          'Content-Type': 'application/json'}, 
   })
   .then((response) => {
     
     if (response.data.status) {
+      localStorage.setItem('token', response.data.token);
        setIsLoggedIn(true);
        setFirstname(response.data.user.firstname);
       navigate('/')

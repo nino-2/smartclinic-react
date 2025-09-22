@@ -22,8 +22,15 @@ const AppointmentBooking = () => {
 
   // Fetch user data for prefill
   useEffect(() => {
+
+    const token = localStorage.getItem('token');
+    if (!token) return;
     axios
-      .get(`${API_URL}/auth/profile`, { withCredentials: true })
+      .get(`${API_URL}/auth/profile`,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then((res) => {
         if (res.data.status) {
           setUserData({
@@ -79,10 +86,16 @@ const AppointmentBooking = () => {
     validationSchema: validationSchema[appointmentStep - 1],
     onSubmit: async (values) => {
       try {
+        const token = localStorage.getItem('token');
         const response = await axios.post(
           `${API_URL}/appointment/book`,
           values,
-          { withCredentials: true }
+          { 
+            headers:{
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }}
+          
         );
         if (response.data.status) {
           setAppointmentReference(generateReference());

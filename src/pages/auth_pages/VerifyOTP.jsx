@@ -57,7 +57,7 @@ const VerifyOTP = ()  =>{
        const otpCode = values.otp.join("");
       setIsLoading(true);
       try {
-        const res = await axios.post(`${API_URL}/auth/verify}`,{email, resetCode: otpCode})
+        const res = await axios.post(`${API_URL}/auth/verify`,{email, resetCode: otpCode})
         if (res.data.status) {
           navigate('/auth/reset-password', { state: { email } });
         } else {

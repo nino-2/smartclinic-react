@@ -17,7 +17,17 @@ const AdminNavbar = ({ sidebarOpen, setSidebarOpen }) => {
 
   
    const adminLogout = () => {
-     axios.post(`${API_URL}/admin/logout`, {}, {withCredentials: true})
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        axios.post(`${API_URL}/admin/logout`, {}, {
+      headers:{ Authorization: `Bearer ${token}` }
+     })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+     localStorage.removeItem('token');
      navigate('/auth/login');
    }
   return (

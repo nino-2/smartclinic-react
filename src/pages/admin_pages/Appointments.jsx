@@ -26,13 +26,14 @@ const Appointments = ({children}) => {
   const [rescheduleId, setRescheduleId] = useState(null);
 
   const API_URL = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem('token');
 
     // Fetch from backend
 
     const fetchAppointments = async () => {
       try {
         const res = await axios.get(`${API_URL}/admin/appointments`, {
-          withCredentials: true,
+          headers:{ Authorization: `Bearer ${token}` },
           params: {
             search: searchTerm,
             status: statusFilter,
@@ -62,7 +63,10 @@ const Appointments = ({children}) => {
     await axios.patch(
       `${API_URL}/admin/appointments/${id}`,
       payload,
-      { withCredentials: true },
+      {
+        headers:{ Authorization: `Bearer ${token}` },
+      }
+      
     );
     // Update the appointment in local state immediately
     setAppointments(prevAppointments =>

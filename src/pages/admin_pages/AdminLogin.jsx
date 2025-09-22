@@ -13,6 +13,7 @@ import axios from 'axios';
 
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem('token');
 
   // let url = 'http://localhost:5001/admin/login'
   
@@ -27,11 +28,15 @@ import axios from 'axios';
     setErrorMsg("");
     try {
       const response = await axios.post(`${API_URL}/admin/login`, values, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true
+        headers: { 
+          "Content-Type": "application/json",
+          
+         },
+       
       });
 
       if (response.data.status) {
+        localStorage.setItem('token', response.data.token);
         navigate("/admin/dashboard");
       } else {
         setErrorMsg(response.data.message || "Login failed");

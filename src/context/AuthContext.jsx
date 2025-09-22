@@ -20,7 +20,13 @@ export const AuthProvider = ({ children }) => {
 
 
     useEffect(() => {
-      axios.get(`${API_URL}/auth/profile`, {withCredentials: true})
+      const token = localStorage.getItem('token');
+
+      axios.get(`${API_URL}/auth/profile`, {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then(res => {
         if (res.data.status) {
           setUser(res.data.user)
@@ -34,6 +40,7 @@ export const AuthProvider = ({ children }) => {
       }
       })
       .catch(()=>{
+        
         setIsLoggedIn(false)
       })
       .finally(()=>{
@@ -43,10 +50,24 @@ export const AuthProvider = ({ children }) => {
 
 
     const handleLogout = () => {
-      axios.post(`${API_URL}/auth/logout`, {}, {withCredentials: true})
-      setIsLoggedIn(false)
-      setFirstname('')
+     try {
+       const token = localStorage.getItem('token');
+        if (token) {
+          axios.post(`${API_URL}/auth/logout`, {}, {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
+        }
+     } catch (error) {
+      console.log(error)
+     }
+
       
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsLoggedIn(false);
+      setFirstname('');
     }
     
    

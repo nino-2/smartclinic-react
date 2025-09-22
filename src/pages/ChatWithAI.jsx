@@ -41,12 +41,14 @@ const ChatWithAI = () => {
     setIsTyping(true);
 
     try {
+      const token = localStorage.getItem('token');
       const { data } = await axios.post(
         `${API_URL}/chat/message`, // adjust backend URL
         { message: userMsg.text, sessionId },
-        { withCredentials: true,
+        {
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
             },
         }   
       );

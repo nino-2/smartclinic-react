@@ -23,13 +23,16 @@ const PatientRecords = ()  => {
   const [loading, setLoading] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem('token');
 
 // Fetch Patients
   useEffect(() => {
     const fetchPatients = async () => {
       try {
       const res = await axios.get(`${API_URL}/admin/patients`, {
-        withCredentials: true,
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
       });
       setPatients(res.data.data || []);
       console.log("Patients API response:", res.data);
@@ -70,7 +73,7 @@ const PatientRecords = ()  => {
   try {
     setLoading(true);
     const res = await axios.get(`${API_URL}/admin/patients/${id}`, {
-      withCredentials: true,
+      headers:{ Authorization: `Bearer ${token}` }
     });
     setSelectedPatient(res.data);
     setShowViewModal(true)
@@ -88,7 +91,9 @@ const PatientRecords = ()  => {
       const res = await axios.put(
         `${API_URL}/admin/patients/${id}`,
         updatedData,
-        { withCredentials: true }
+        { 
+          headers:{ Authorization: `Bearer ${token}` }
+         }
       );
 
       setPatients(prev =>
@@ -108,7 +113,7 @@ const PatientRecords = ()  => {
 
     try {
       await axios.delete(`${API_URL}/admin/patients/${id}`, {
-        withCredentials: true,
+        headers:{ Authorization: `Bearer ${token}` }
       });
 
       setPatients(prev => prev.filter(p => p._id !== id));
@@ -119,29 +124,7 @@ const PatientRecords = ()  => {
     }
   };
 
-   // 📎 Upload Report
-  // const handleUploadReport = async (id) => {
-  //   if (!fileUpload) return alert("Please select a file");
-
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("file", fileUpload);
-
-  //     await axios.post(
-  //       `http://localhost:5001/admin/patients/${id}/upload`,
-  //       formData,
-  //       {
-  //         headers: { "Content-Type": "multipart/form-data" },
-  //         withCredentials: true,
-  //       }
-  //     );
-
-  //     alert("Report uploaded successfully");
-  //     setFileUpload(null);
-  //   } catch (err) {
-  //     alert("Upload failed");
-  //   }
-  // };
+   
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -195,14 +178,6 @@ const PatientRecords = ()  => {
                 </div>
               </div>
 
-              {/* Add Patient Button */}
-              {/* <button
-                onClick={handleAddPatient}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Patient
-              </button> */}
             </div>
           </div>
 
@@ -323,14 +298,7 @@ const PatientRecords = ()  => {
                           Edit
                         </button>
                         
-                        {/* <button
-                          onClick={() => handleUploadReport(patient._id)}
-                          className="inline-flex items-center px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700"
-                        >
-                          <Upload className="h-3 w-3 mr-1" />
-                          <input type="file" onChange={(e) => setFileUpload(e.target.files[0])} />
-                          Upload
-                        </button> */}
+                       
                         <button
                           onClick={() => setDeletingPatient(patient)}
                           className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
@@ -360,12 +328,7 @@ const PatientRecords = ()  => {
               </div>
               <div className="text-sm text-gray-500">Recent Visits (7 days)</div>
             </div>
-            {/* <div className="bg-white p-4 rounded-lg shadow">
-              <div className="text-2xl font-bold text-green-600">
-                {filteredPatients.reduce((acc, p) => acc + p.reports?.length, 0)}
-              </div>
-              <div className="text-sm text-gray-500">Medical Reports</div>
-            </div> */}
+           
             <div className="bg-white p-4 rounded-lg shadow">
               <div className="text-2xl font-bold text-yellow-600">
                 {filteredPatients.filter(p => p.allergies !== "None").length}

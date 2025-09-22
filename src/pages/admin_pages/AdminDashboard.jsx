@@ -15,12 +15,18 @@ const AdminDashboard = ({ children }) => {
   const [recentActivity, setRecentActivity] = useState([]);
 
   const API_URL = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem('token');
 
   // Fetch stats
   useEffect(() => {
     const fetchStats = async () => {
+      
       try {
-        const res = await axios.get(`${API_URL}/admin/stats`, { withCredentials: true });
+        const res = await axios.get(`${API_URL}/admin/stats`,{
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        });
         if (res.data.status) setStats(res.data.data);
       } catch (err) {
         console.error("Failed to fetch stats", err);
@@ -34,7 +40,9 @@ const AdminDashboard = ({ children }) => {
     const fetchTodaysAppointments = async () => {
       try {
         const res = await axios.get(`${API_URL}/admin/appointments?date=today`, {
-          withCredentials: true,
+           headers:{
+            Authorization: `Bearer ${token}`
+          }
         });
         if (res.data.status) setTodaysAppointments(res.data.appointments);
       } catch (err) {
@@ -48,7 +56,11 @@ const AdminDashboard = ({ children }) => {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const res = await axios.get(`${API_URL}/admin/activity`, { withCredentials: true });
+        const res = await axios.get(`${API_URL}/admin/activity`, {
+           headers:{
+            Authorization: `Bearer ${token}`
+          }
+        });
         if (res.data.status) setRecentActivity(res.data.activity || []);
       } catch (err) {
         console.error("Failed to fetch activity logs", err);
