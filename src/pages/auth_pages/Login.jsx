@@ -17,6 +17,7 @@ const Login = () => {
 
   let navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
+ 
   
 
   let formik = useFormik({
@@ -27,7 +28,10 @@ const Login = () => {
     onSubmit: (values) => {
       console.log(values)
       axios.post(`${API_URL}/auth/login`, values, {
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          'Content-Type': 'application/json',
+         
+         },
       })
   .then((response) => {
     

@@ -17,10 +17,14 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null)
     
-
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setLoading(false)
+        return;
+      }
 
       axios.get(`${API_URL}/auth/profile`, {
         headers:{
@@ -51,7 +55,7 @@ export const AuthProvider = ({ children }) => {
 
     const handleLogout = () => {
      try {
-       const token = localStorage.getItem('token');
+      
         if (token) {
           axios.post(`${API_URL}/auth/logout`, {}, {
         headers:{
