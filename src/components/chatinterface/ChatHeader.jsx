@@ -26,7 +26,7 @@ function ChatHeader({ endChat }) {
           </div>
         </div>
         <button
-          className="bg-[#FF5722] text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-[#E64A19] max-sm:px-3 max-sm:text-sm"
+          className="bg-[#FF5722] text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-[#E64A19] max-sm:px-3 max-sm:text-sm cursor-pointer"
           onClick={endChat}
           aria-label="End chat session"
         >

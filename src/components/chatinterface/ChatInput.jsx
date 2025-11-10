@@ -28,7 +28,7 @@ const ChatInput = ({
         <button
           type="button"
           aria-label={isRecording ? "Stop recording" : "Start recording"}
-          className={`absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200`}
+          className={`absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 cursor-pointer`}
           style={{
             backgroundColor: isRecording ? "#FF5722" : "#E3F2FD",
             color: isRecording ? "white" : "#1976D2",
@@ -44,7 +44,7 @@ const ChatInput = ({
         type="submit"
         aria-label="Send message"
         disabled={!currentMessage.trim()}
-        className="w-12 h-12 bg-[#1976D2] text-white rounded-xl font-medium transition-colors duration-200 hover:bg-[#1565C0] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-12 h-12 bg-[#1976D2] text-white rounded-xl font-medium transition-colors duration-200 hover:bg-[#1565C0] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
       >
         <svg
           className="w-5 h-5"

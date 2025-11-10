@@ -66,7 +66,7 @@ const FqSection = () => {
             faqData.map((faq, index)=>(
                 <div key={index} className={`border-2 border-[#B3E5FC] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ${activeFaq[faq.id] ? 'bg-gradient-to-r from-[#F8FDFF] to-[#F0F8FF]' : 'bg-white'}`}>
                     <button
-                        className={`w-full px-8 max-sm:px-6 py-6 max-sm:py-5 text-left ${activeFaq[faq.id] ? 'bg-gradient-to-r from-[#E3F2FD] to-[#F0F8FF] hover:from-[#BBDEFB] hover:to-[#E3F2FD]' : 'bg-gradient-to-r from-white to-white'} transition-all duration-300 flex items-center justify-between group`}
+                        className={`w-full px-8 max-sm:px-6 py-6 max-sm:py-5 cursor-pointer text-left ${activeFaq[faq.id] ? 'bg-gradient-to-r from-[#E3F2FD] to-[#F0F8FF] hover:from-[#BBDEFB] hover:to-[#E3F2FD]' : 'bg-gradient-to-r from-white to-white'} transition-all duration-300 flex items-center justify-between group`}
                         onClick={() => toogleDown(faq.id)}>
                         <span className='font-bold text-[#0D47A1] text-xl max-sm:text-lg group-hover:text-[#1976D2] transition-colors duration-200 pr-4 leading-relaxed'>
                          {faq.question}

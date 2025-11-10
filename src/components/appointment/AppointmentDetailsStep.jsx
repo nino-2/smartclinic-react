@@ -99,7 +99,7 @@ const AppointmentDetailsStep = ({ formik, onNext, onPrevious }) => {
       <div className="flex justify-between mt-8">
         <button
           type="button"
-          className="bg-[#E0E0E0] text-[#666] px-8 py-3 rounded-lg"
+          className="bg-[#E0E0E0] text-[#666] px-8 py-3 rounded-lg cursor-pointer"
           onClick={onPrevious}
         >
           Previous

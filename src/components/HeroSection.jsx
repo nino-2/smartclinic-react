@@ -36,7 +36,7 @@ const HeroSection = ({ startChat, bookAppointment }) => {
               <Link to='/smartclinic'>
               <button
                 onClick={startChat}
-                className="w-full bg-[#1976D2] text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:bg-[#1565C0]"
+                className="w-full bg-[#1976D2] text-white py-4 px-6 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:bg-[#1565C0] cursor-pointer"
               >
                 💬 Chat with AI Assistant
                 <svg

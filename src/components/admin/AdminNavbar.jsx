@@ -67,7 +67,7 @@ const AdminNavbar = ({ sidebarOpen, setSidebarOpen }) => {
           );
         })}
 
-        <button onClick={adminLogout} className="flex items-center w-full px-4 py-3 mt-8 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 border-t pt-6">
+        <button onClick={adminLogout} className="flex items-center w-full px-4 py-3 mt-8 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 border-t pt-6 cursor-pointer">
           <LogOut className="mr-3 h-5 w-5" />
           Logout
         </button>

@@ -105,7 +105,7 @@ const Navbar = ({
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                     <button
                       onClick={handleClickLogout}
-                      className="w-full text-left px-4 py-2 text-[#666] hover:bg-[#F5F5F5] hover:text-[#1976D2] transition-colors duration-200"
+                      className="w-full text-left px-4 py-2 text-[#666] hover:bg-[#F5F5F5] hover:text-[#1976D2] transition-colors duration-200 cursor-pointer"
                     >
                       Logout
                     </button>
@@ -131,7 +131,7 @@ const Navbar = ({
           {/* Mobile Hamburger */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden p-2 rounded-lg bg-[#F5F5F5] text-[#666]"
+            className="lg:hidden p-2 rounded-lg bg-[#F5F5F5] text-[#666] cursor-pointer"
           >
             <svg
               className="w-6 h-6"
@@ -157,7 +157,7 @@ const Navbar = ({
             <h2 className="text-lg font-semibold text-[#1976D2]">Menu</h2>
             <button
               onClick={closeMobileMenu}
-              className="p-2 rounded-lg bg-[#F5F5F5] text-[#666]"
+              className="p-2 rounded-lg bg-[#F5F5F5] text-[#666] cursor-pointer"
             >
               <svg
                 className="w-5 h-5"

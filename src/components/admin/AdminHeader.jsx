@@ -9,7 +9,7 @@ const AdminHeader = ({setSidebarOpen}) => {
         <header className="sticky top-0 left-0 right-0 z-20 bg-white shadow-sm border-b">
           <div className="flex items-center justify-between h-16 px-6">
             <button
-              className="lg:hidden p-2 rounded hover:bg-gray-100"
+              className="lg:hidden p-2 rounded hover:bg-gray-100 cursor-pointer"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="h-5 w-5" />
@@ -17,7 +17,7 @@ const AdminHeader = ({setSidebarOpen}) => {
 
             <div className="flex items-center space-x-4 ml-auto">
               <div className="relative">
-                <button className="p-2 rounded hover:bg-gray-100">
+                <button className="p-2 rounded hover:bg-gray-100 cursor-pointer">
                   <Bell className="h-5 w-5" />
                 </button>
                 

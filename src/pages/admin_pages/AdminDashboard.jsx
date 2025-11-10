@@ -161,7 +161,7 @@ const AdminDashboard = ({ children }) => {
                         <div>
                           <div className="text-sm font-medium">
                             {appointment.patientName}
-                            {/* {appointment.firstname} {appointment.lastname} */}
+                            
                             </div>
                           <div className="text-xs text-gray-500">{appointment.type}</div>
                         </div>
@@ -181,7 +181,7 @@ const AdminDashboard = ({ children }) => {
                   ))}
                 </div>
                 <Link to='/admin/appointments'>
-                <button className="w-full mt-4 py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50">
+                <button className="w-full mt-4 py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
                   View All Appointments
                 </button>
                 </Link>

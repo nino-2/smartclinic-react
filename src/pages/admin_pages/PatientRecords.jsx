@@ -209,14 +209,14 @@ const PatientRecords = ()  => {
                 <div className="border-t pt-3 mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={() => handleView(patient._id)}
-                    className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                    className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 cursor-pointer"
                   >
                     <Eye className="h-3 w-3 mr-1" />
                     View
                   </button>
                   <button
                     onClick={() => setEditingPatient(patient)}
-                    className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+                    className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 cursor-pointer"
                   >
                     <Edit className="h-3 w-3 mr-1" />
                     Edit
@@ -224,7 +224,7 @@ const PatientRecords = ()  => {
                  
                   <button
                     onClick={() => setDeletingPatient(patient)}
-                    className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                    className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 cursor-pointer"
                   >
                     <Trash2 className="h-3 w-3 mr-1" />
                     Delete
@@ -285,14 +285,14 @@ const PatientRecords = ()  => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                         <button
                           onClick={() => handleView(patient._id)}
-                          className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                          className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 cursor-pointer"
                         >
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </button>
                         <button
                           onClick={() => setEditingPatient(patient)}
-                          className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+                          className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 cursor-pointer"
                         >
                           <Edit className="h-3 w-3 mr-1" />
                           Edit
@@ -301,7 +301,7 @@ const PatientRecords = ()  => {
                        
                         <button
                           onClick={() => setDeletingPatient(patient)}
-                          className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                          className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 cursor-pointer"
                         >
                           <Trash2 className="h-3 w-3 mr-1" />
                           Delete
@@ -349,7 +349,7 @@ const PatientRecords = ()  => {
                 <h3 className="text-lg font-medium text-gray-900">Patient Details</h3>
                 <button
                   onClick={() => setShowViewModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 hover:text-gray-600 cursor-pointer"
                 >
                   <X className="h-6 w-6" />
                 </button>
@@ -442,7 +442,7 @@ const PatientRecords = ()  => {
                           </div>
                           <button
                             onClick={() => handleDownloadReport(report.name)}
-                            className="text-blue-600 hover:text-blue-800"
+                            className="text-blue-600 hover:text-blue-800 cursor-pointer"
                           >
                             <Download className="h-4 w-4" />
                           </button>
@@ -505,14 +505,14 @@ const PatientRecords = ()  => {
               <div className="flex justify-end gap-3 pt-3">
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
                 >
                   Save
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditingPatient(null)}
-                  className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
+                  className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -535,13 +535,13 @@ const PatientRecords = ()  => {
       <div className="flex justify-end gap-3">
         <button
           onClick={() => handleDeletePatient(deletingPatient._id)}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 cursor-pointer"
         >
           Yes, Delete
         </button>
         <button
           onClick={() => setDeletingPatient(null)}
-          className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
+          className="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 cursor-pointer"
         >
           Cancel
         </button>

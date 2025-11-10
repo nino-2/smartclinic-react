@@ -15,7 +15,7 @@ import axios from 'axios';
   const API_URL = import.meta.env.VITE_API_URL;
   
 
-  // let url = 'http://localhost:5001/admin/login'
+
   
 
   let formik = useFormik({
@@ -123,7 +123,7 @@ import axios from 'axios';
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                   disabled={isLoading}
                 >
                   {showPassword ? (
@@ -154,7 +154,7 @@ import axios from 'axios';
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#0D47A1] text-white py-3 px-4 rounded-lg font-medium hover:opacity-90 transition-opacity duration-200 focus:ring-2 focus:ring-[#0D47A1] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#0D47A1] text-white py-3 px-4 rounded-lg font-medium hover:opacity-90 transition-opacity duration-200 focus:ring-2 focus:ring-[#0D47A1] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">

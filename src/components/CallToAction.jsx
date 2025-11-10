@@ -17,7 +17,7 @@ const CallToAction = () => {
           
           <Link to='/smartclinic' className='w-full sm:w-auto'>
           <button
-            className=" w-full sm:w-auto bg-[#1976D2] text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:bg-[#1565C0]"
+            className=" w-full sm:w-auto bg-[#1976D2] text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:bg-[#1565C0] cursor-pointer"
           >
             💬 Start Chatting Now
             <svg
@@ -39,7 +39,7 @@ const CallToAction = () => {
           <Link to='/appointment' className='w-full sm:w-auto'>
           <button
             
-            className=" w-full sm:w-auto bg-white text-[#1976D2] border-2 border-[#1976D2] py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-200 hover:bg-[#E3F2FD]"
+            className=" w-full sm:w-auto bg-white text-[#1976D2] border-2 border-[#1976D2] py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-200 hover:bg-[#E3F2FD] cursor-pointer"
           >
             Book Appointment
           </button>

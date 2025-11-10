@@ -43,7 +43,7 @@ function QuickSuggestions({ sendQuickMessage }) {
         {suggestions.map((suggestion, index) => (
           <button
             key={index}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-[#E3F2FD] text-[#1976D2] hover:bg-[#1976D2] hover:text-white`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 bg-[#E3F2FD] text-[#1976D2] hover:bg-[#1976D2] hover:text-white cursor-pointer`}
             onClick={() => handleClick(suggestion)}
           >
             {suggestion.text}

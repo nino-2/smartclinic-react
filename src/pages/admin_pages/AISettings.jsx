@@ -173,7 +173,7 @@ const AISettings = ({children}) => {
                 <h2 className="text-lg font-semibold text-gray-900">FAQ Database</h2>
                 <button
                   onClick={() => setShowAddFAQ(true)}
-                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 cursor-pointer"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add FAQ
@@ -207,13 +207,13 @@ const AISettings = ({children}) => {
                         <div className="flex items-center space-x-2 ml-4">
                           <button
                             onClick={() => handleEditFAQ(faq)}
-                            className="text-gray-400 hover:text-blue-600"
+                            className="text-gray-400 hover:text-blue-600 cursor-pointer"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteFAQ(faq.id)}
-                            className="text-gray-400 hover:text-red-600"
+                            className="text-gray-400 hover:text-red-600 cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -261,7 +261,7 @@ const AISettings = ({children}) => {
                           const newResponses = fallbackResponses.filter((_, i) => i !== index);
                           setFallbackResponses(newResponses);
                         }}
-                        className="text-gray-400 hover:text-red-600"
+                        className="text-gray-400 hover:text-red-600 cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -269,14 +269,14 @@ const AISettings = ({children}) => {
                   ))}
                   <button
                     onClick={() => setFallbackResponses([...fallbackResponses, ""])}
-                    className="inline-flex items-center px-3 py-2 text-sm text-purple-600 hover:text-purple-700"
+                    className="inline-flex items-center px-3 py-2 text-sm text-purple-600 hover:text-purple-700 cursor-pointer"
                   >
                     <Plus className="w-4 h-4 mr-1" />
                     Add Response
                   </button>
                 </div>
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                  <button className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                  <button className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 cursor-pointer">
                     <Save className="w-4 h-4 mr-2" />
                     Save Changes
                   </button>
@@ -378,7 +378,7 @@ const AISettings = ({children}) => {
                   )}
                 </div>
                 <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                  <button className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                  <button className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 cursor-pointer">
                     <Save className="w-4 h-4 mr-2" />
                     Save Settings
                   </button>
@@ -530,7 +530,7 @@ function FAQModal({ faq, onSave, onClose }) {
             <h3 className="text-lg font-medium text-gray-900">
               {faq ? "Edit FAQ" : "Add New FAQ"}
             </h3>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 cursor-pointer">
               <X className="h-6 w-6" />
             </button>
           </div>
@@ -574,13 +574,13 @@ function FAQModal({ faq, onSave, onClose }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 cursor-pointer"
               >
                 {faq ? "Update FAQ" : "Add FAQ"}
               </button>

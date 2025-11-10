@@ -228,14 +228,14 @@ const Appointments = ({children}) => {
               <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   onClick={exportToExcel}
-                  className="flex items-center justify-center px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors duration-200"
+                  className="flex items-center justify-center px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors duration-200 cursor-pointer"
                 >
                   <FileSpreadsheet className="h-4 w-4 mr-2" />
                   Export Excel
                 </button>
                 <button
                   onClick={exportToPDF}
-                  className="flex items-center justify-center px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors duration-200"
+                  className="flex items-center justify-center px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors duration-200 cursor-pointer"
                 >
                   <FileText className="h-4 w-4 mr-2" />
                   Export PDF
@@ -296,7 +296,7 @@ const Appointments = ({children}) => {
                           {apt.status === "pending" && (
                             <button
                               onClick={() => handleApprove(apt._id)}
-                              className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+                              className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 cursor-pointer"
                             >
                               <Check className="h-3 w-3 mr-1" />
                               Approve
@@ -309,7 +309,7 @@ const Appointments = ({children}) => {
                               setShowModal(true)
                             }}
                               
-                              className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                              className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 cursor-pointer"
                             >
                               <Edit className="h-3 w-3 mr-1" />
                               Reschedule
@@ -339,13 +339,13 @@ const Appointments = ({children}) => {
                               <div className="flex justify-end gap-2 mt-4">
                                 <button
                                   onClick={() => setShowModal(false)}
-                                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
                                 >
                                   Cancel
                                 </button>
                                 <button
                                   onClick={() => handleReschedule(rescheduleId)}
-                                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
                                 >
                                   Save
                                 </button>
@@ -357,7 +357,7 @@ const Appointments = ({children}) => {
                           {apt.status !== "cancelled" && (
                             <button
                               onClick={() => handleCancel(apt._id)}
-                              className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                              className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 cursor-pointer"
                             >
                               <Ban className="h-3 w-3 mr-1" />
                               Cancel
@@ -401,7 +401,7 @@ const Appointments = ({children}) => {
                   {apt.status === "pending" && (
                     <button
                       onClick={() => handleApprove(apt._id)}
-                      className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700"
+                      className="inline-flex items-center px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 cursor-pointer"
                     >
                       <Check className="h-3 w-3 mr-1" />
                       Approve
@@ -413,7 +413,7 @@ const Appointments = ({children}) => {
                         setRescheduleId(apt._id)
                         setShowModal(true)
                       }}
-                      className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                      className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 cursor-pointer"
                     >
                       <Edit className="h-3 w-3 mr-1" />
                       Reschedule
@@ -442,13 +442,13 @@ const Appointments = ({children}) => {
                               <div className="flex justify-end gap-2 mt-4">
                                 <button
                                   onClick={() => setShowModal(false)}
-                                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                  className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
                                 >
                                   Cancel
                                 </button>
                                 <button
                                   onClick={() => handleReschedule(rescheduleId)}
-                                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
                                 >
                                   Save
                                 </button>
@@ -459,7 +459,7 @@ const Appointments = ({children}) => {
                   {apt.status !== "cancelled" && (
                     <button
                       onClick={() => handleCancel(apt._id)}
-                      className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+                      className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 cursor-pointer"
                     >
                       <Ban className="h-3 w-3 mr-1" />
                       Cancel

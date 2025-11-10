@@ -36,7 +36,7 @@ const QuickActions = () => {
             <Link to='/appointment'>
             <button
             
-              className="w-full bg-[#1976D2] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#1565C0]"
+              className="w-full bg-[#1976D2] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#1565C0] cursor-pointer"
             >
               Book Now
             </button>
@@ -62,7 +62,7 @@ const QuickActions = () => {
             <Link to="/faq">
             <button
               
-              className="w-full bg-[#4CAF50] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#45A049]"
+              className="w-full bg-[#4CAF50] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#45A049] cursor-pointer"
             >
               Learn More
             </button>
@@ -88,7 +88,7 @@ const QuickActions = () => {
             <Link to='/faq'>
             <button
               
-              className="w-full bg-[#FFC107] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#FFB300]"
+              className="w-full bg-[#FFC107] text-white py-3 px-6 rounded-xl font-medium transition-all duration-200 hover:bg-[#FFB300] cursor-pointer"
             >
               Contact Us
             </button>

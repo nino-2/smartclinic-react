@@ -239,7 +239,7 @@ const ChatLogs = ({children}) => {
                             setSelectedConversation(log);
                             setShowConversationModal(true);
                           }}
-                          className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                          className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 cursor-pointer"
                         >
                           <Eye className="h-3 w-3 mr-1" />
                           View
@@ -307,7 +307,7 @@ const ChatLogs = ({children}) => {
                     setSelectedConversation(log);
                     setShowConversationModal(true);
                   }}
-                  className="w-full mt-3 inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                  className="w-full mt-3 inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 cursor-pointer"
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Conversation
@@ -358,7 +358,7 @@ const ChatLogs = ({children}) => {
                 </h3>
                 <button
                   onClick={() => setShowConversationModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-gray-400 hover:text-gray-600 cursor-pointer"
                 >
                   <X className="h-6 w-6" />
                 </button>

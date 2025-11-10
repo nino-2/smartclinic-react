@@ -69,7 +69,7 @@ const Healthsection = () => {
                     healthTipsData.map((health, index)=>(
                         <div key={index} className={`border-2 border-[#C8E6C9] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-r from-[#F1F8E9] to-[#E8F5E8] hover:border-[#4CAF50] ${activeTip[health.id] ? 'bg-gradient-to-r from-[#F8FDFF] to-[#F0F8FF]' : 'bg-white'}`}>
                             <button
-                                className={`w-full px-8 max-sm:px-6 py-6 max-sm:py-5 text-left bg-gradient-to-r from-[#E8F5E8] to-[#F1F8E9] hover:from-[#C8E6C9] hover:to-[#E8F5E8] transition-all duration-300 flex items-center justify-between group ${activeTip[health.id] ? 'bg-gradient-to-r from-[#E3F2FD] to-[#F0F8FF] hover:from-[#BBDEFB] hover:to-[#E3F2FD]' : 'bg-gradient-to-r from-white to-white'} transition-all duration-300 flex items-center justify-between group`}
+                                className={`w-full px-8 cursor-pointer max-sm:px-6 py-6 max-sm:py-5 text-left bg-gradient-to-r from-[#E8F5E8] to-[#F1F8E9] hover:from-[#C8E6C9] hover:to-[#E8F5E8] transition-all duration-300 flex items-center justify-between group ${activeTip[health.id] ? 'bg-gradient-to-r from-[#E3F2FD] to-[#F0F8FF] hover:from-[#BBDEFB] hover:to-[#E3F2FD]' : 'bg-gradient-to-r from-white to-white'} transition-all duration-300 flex items-center justify-between group`}
                                 onClick={() => toogleDown(health.id)}>
                                 <span className='font-bold text-[#2E7D32] text-xl max-sm:text-lg group-hover:text-[#388E3C] transition-colors duration-200 pr-4 leading-relaxed'>
                                  {health.question}

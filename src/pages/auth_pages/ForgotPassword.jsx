@@ -12,7 +12,7 @@ const [isLoading, setIsLoading] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // let url = 'http://localhost:5001/auth/request'
+
 
   let formik = useFormik({
     initialValues: {
