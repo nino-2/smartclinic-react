@@ -7,6 +7,7 @@ import CallToAction from '../components/CallToAction';
 import Footer from '../components/Footer';
 import Notification from '../components/Notification';
 import { motion } from 'framer-motion';
+
 // LandingPage component
 const LandingPage = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -109,7 +110,7 @@ const LandingPage = () => {
         </motion.div>
 
       </main>
-
+ 
       <Footer
         navigateTo={navigateTo}
         bookAppointment={bookAppointment}

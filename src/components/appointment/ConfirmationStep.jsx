@@ -20,7 +20,7 @@ const ConfirmationStep = ({
         </h2>
         <p className="mt-2">Reference: {appointmentReference}</p>
         <button
-          className="mt-6 bg-blue-600 text-white px-6 py-3 rounded"
+          className="mt-6 bg-blue-600 text-white px-6 py-3 rounded cursor-pointer"
           onClick={()=> {
              setAppointmentSubmitted(false);
              setAppointmentStep(1);
@@ -51,7 +51,7 @@ const ConfirmationStep = ({
       <div className="flex justify-between mt-8">
         <button
           type="button"
-          className="bg-gray-300 px-8 py-3 rounded"
+          className="bg-gray-300 px-8 py-3 rounded cursor-pointer"
           onClick={onPrevious}
         >
           Previous

@@ -28,7 +28,7 @@ const AppointmentDetailsStep = ({ formik, onNext, onPrevious }) => {
       </h2>
       <div className="grid max-md:grid-cols-1 grid-cols-2 gap-6">
         <div>
-          <label className="block mb-2">Preferred Date</label>
+          <label className="block mb-2">Preferred  Date</label>
           <input
             name="date"
             type="date"
